@@ -3,6 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: addons-aws-cert-manager
+  # https://github.com/kubernetes/ingress-nginx/blob/ab3a789caae65eec4ad6e3b46b19750b481b6bce/deploy/aws/nlb/service-nlb.yaml
 spec:
   syncPolicy:
     preserveResourcesOnDeletion: true
@@ -14,7 +15,7 @@ spec:
               values:
                 addonChart: cert-manager
                 # anything not staging or prod use this version
-                addonChartVersion: v1.12.4
+                addonChartVersion: v1.13.3
                 addonChartRepository: https://charts.jetstack.io
               selector:
                 matchExpressions:
@@ -31,13 +32,13 @@ spec:
                 matchLabels:
                   environment: staging
               values:
-                addonChartVersion: v1.12.4
+                addonChartVersion: v1.13.3
           - clusters:
               selector:
                 matchLabels:
                   environment: prod
               values:
-                addonChartVersion: v1.12.4
+                addonChartVersion: v1.13.3
   template:
     metadata:
       name: addon-{{name}}-{{values.addonChart}}
@@ -70,8 +71,7 @@ spec:
           # values
           # valuesObject
       destination:
-        namespace: 'cert-manager'
-#        namespace: '{{metadata.annotations.cert_manager_namespace}}'
+        namespace: '{{metadata.annotations.cert_manager_namespace}}'
         name: '{{name}}'
       syncPolicy:
         automated: {}
