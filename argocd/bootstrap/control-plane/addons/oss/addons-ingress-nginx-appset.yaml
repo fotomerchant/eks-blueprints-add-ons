@@ -60,6 +60,8 @@ spec:
               controller:
                 service:
                   type: {{default "LoadBalancer" .metadata.annotations.ingress_nginx_service_type}}
+                  annotations:
+                    service.beta.kubernetes.io/aws-load-balancer-type: nlb
       destination:
         namespace: '{{.values.addonChart}}'
         name: '{{.name}}'
