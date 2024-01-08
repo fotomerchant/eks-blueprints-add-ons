@@ -54,9 +54,9 @@ spec:
             releaseName: '{{values.addonChart}}'
             ignoreMissingValueFiles: true
             valueFiles:
-              - $values/{{metadata.annotations.addons_repo_basepath}}charts/addons/{{values.addonChart}}/values.yaml
-              - $values/{{metadata.annotations.addons_repo_basepath}}environments/{{metadata.labels.environment}}/addons/{{values.addonChart}}/values.yaml
-              - $values/{{metadata.annotations.addons_repo_basepath}}clusters/{{name}}/addons/{{values.addonChart}}/values.yaml
+              - {{metadata.annotations.addons_repo_basepath}}charts/addons/{{values.addonChart}}/values.yaml
+#              - $values/{{metadata.annotations.addons_repo_basepath}}environments/{{metadata.labels.environment}}/addons/{{values.addonChart}}/values.yaml
+#              - $values/{{metadata.annotations.addons_repo_basepath}}clusters/{{name}}/addons/{{values.addonChart}}/values.yaml
             values: |
               installCRDs: true
           # fileParameters:
@@ -66,8 +66,7 @@ spec:
           # values
           # valuesObject
       destination:
-        #namespace: '{{metadata.annotations.cert_manager_namespace}}'
-        namespace: 'cert-manager'
+        namespace: '{{metadata.annotations.cert_manager_namespace}}'
         name: '{{name}}'
       syncPolicy:
         automated: {}
