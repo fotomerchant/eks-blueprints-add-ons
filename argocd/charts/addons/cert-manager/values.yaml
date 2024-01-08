@@ -1,1 +1,4 @@
 # Helm chart values
+metadata:
+  annotations:
+    cert_manager_namespace: "cert-manager"
