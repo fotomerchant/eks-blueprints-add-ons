@@ -286,3 +286,11 @@ velero:
 opentelemetryCollector:
   enable: false
   serviceAccountName:
+
+# extension to include the github actions controller runner
+arc:
+  enable: false
+  createNamespace: true
+  authSecret:
+    create: true
+    github_token:

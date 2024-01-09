@@ -1,0 +1,33 @@
+{{- if and (.Values.arc) (.Values.arc.enable) -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: actions-runner-controller
+  namespace: {{ .Values.argoNamespace | default "argocd" }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: {{ .Values.argoProject | default "default" }}
+  source:
+    repoURL: {{ .Values.repoUrl }}
+    path: add-ons/arc
+    targetRevision: {{ .Values.targetRevision }}
+    helm:
+      values: |
+        actions-runner-controller:
+        {{- toYaml .Values.arc | nindent 10 }}
+      parameters:
+        - name: actions-runner-controller.authSecret.github_token
+          value: {{ .Values.arc.authSecret.github_token }}
+  destination:
+    server: {{ .Values.destinationServer | default "https://kubernetes.default.svc" }}
+    namespace: actions-runner-system
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - CreateNamespace={{ .Values.arc.createNamespace }}
+      - Replace=true
+{{- end -}}
