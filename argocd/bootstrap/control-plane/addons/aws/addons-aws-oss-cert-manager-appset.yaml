@@ -71,7 +71,7 @@ spec:
           # values
           # valuesObject
       destination:
-        namespace: 'cert-manager'
+        namespace: '{{metadata.annotations.cert_manager_namespace}}'
         name: '{{name}}'
       syncPolicy:
         automated: {}
