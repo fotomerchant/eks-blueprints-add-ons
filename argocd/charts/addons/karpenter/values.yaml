@@ -1,1 +1,4 @@
 # Helm chart values
+metadata:
+  annotations:
+    karpenter_node_instance_profile_name: "{{ .Values.clusterName }}-{{ .Values.clusterName }}"

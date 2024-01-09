@@ -1,1 +1,4 @@
 # Helm chart values
+metadata:
+  annotations:
+    external_secrets_service_account: "external-secrets-sa"

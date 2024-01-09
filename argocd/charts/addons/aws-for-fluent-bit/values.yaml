@@ -1,1 +1,4 @@
 # Helm chart values
+metadata:
+  annotations:
+    aws_for_fluentbit_namespace: kube-system
