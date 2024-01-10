@@ -1,0 +1,26 @@
+# Helm chart values
+destinationServer: ''
+argoProjectNamespace: ''
+argoNamespace: ''
+
+
+labels:
+  env: dev
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+  apps:
+    arc:
+      createProject: true
+      repoURL: git@github.com:fotomerchant/eks-blueprints-add-ons.git
+      targetRevision: main
+      path: add-ons/arc
+
+      helm:
+        values: |-
+          enable: true
+          createNamespace: true
+          authSecret:
+            create: true
+            github_token:
+

@@ -1,0 +1,51 @@
+{{- if and (.Values.spec.apps.arc) (.Values.spec.apps.arc.createProject) -}}
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ .Values.spec.apps.arc.project | default "actions-runner-controller" }}
+  namespace: {{ .Values.argoProjectNamespace | default "argocd" }}
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  destinations:
+    - namespace: {{ .Values.spec.apps.ecsdemoCrystal.namespace | default "actions-runner-controller" }}
+      server: {{ .Values.destinationServer | default "https://kubernetes.default.svc" }}
+  sourceRepos:
+    - {{ .Values.spec.apps.arc.repoURL }}
+  {{- with .Values.sourceNamespaces }}
+  sourceNamespaces:
+    {{- toYaml .| nindent 4 }}
+  {{- end }}
+---
+{{- end }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.spec.apps.arc.name | default "actions-runner-controller" }}
+  namespace: {{ .Values.argoNamespace | default "argocd" }}
+
+  labels:
+    {{- toYaml .Values.labels | nindent 4 }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: {{ .Values.spec.apps.arc.project | default "actions-runner-controller" }}
+  destination:
+    namespace: {{ .Values.spec.apps.arc.namespace | default "actions-runner-controller" }}
+    server: {{ .Values.destinationServer | default .Values.spec.destination.server }}
+  source:
+    repoURL: {{ .Values.spec.apps.arc.repoURL }}
+    targetRevision: {{ .Values.spec.apps.arc.targetRevision }}
+    path: {{ .Values.spec.apps.arc.path }}
+    helm:
+    {{- toYaml .Values.spec.apps.arc.helm | nindent 6 }}
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - CreateNamespace=false # Created with IaC - # https://github.com/argoproj/argo-cd/issues/7799
