@@ -11,7 +11,7 @@ metadata:
     argocd.argoproj.io/sync-wave: "1"
 spec:
   destinations:
-    - namespace: {{ .Values.spec.apps.ecsdemoCrystal.namespace | default "actions-runner-controller" }}
+    - namespace: {{ .Values.spec.apps.arc.namespace | default "actions-runner-controller" }}
       server: {{ .Values.destinationServer | default "https://kubernetes.default.svc" }}
   sourceRepos:
     - {{ .Values.spec.apps.arc.repoURL }}
@@ -43,7 +43,11 @@ spec:
     targetRevision: {{ .Values.spec.apps.arc.targetRevision }}
     path: {{ .Values.spec.apps.arc.path }}
     helm:
-    {{- toYaml .Values.spec.apps.arc.helm | nindent 6 }}
+      enable: true
+      createNamespace: true
+      authSecret:
+        create: true
+        github_token:
   syncPolicy:
     automated:
       prune: true

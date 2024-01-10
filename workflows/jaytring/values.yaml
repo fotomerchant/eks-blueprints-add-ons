@@ -22,5 +22,5 @@ spec:
           createNamespace: true
           authSecret:
             create: true
-            github_token:
+            github_token: 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
 
