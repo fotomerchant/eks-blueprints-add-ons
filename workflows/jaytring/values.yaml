@@ -5,7 +5,7 @@ argoNamespace: ''
 
 
 labels:
-  env: dev
+  env: jaytring
 spec:
   destination:
     server: https://kubernetes.default.svc
