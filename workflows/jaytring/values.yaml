@@ -13,7 +13,7 @@ spec:
     arc:
       createProject: true
       repoURL: git@github.com:fotomerchant/eks-blueprints-add-ons.git
-      targetRevision: main
+      targetRevision: feature/fep-7-blueprint-integration
       path: add-ons/arc
 
       helm:
