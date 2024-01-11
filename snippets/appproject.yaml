@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: "actions-runner-controller"
+  namespace: "argocd"
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  destinations:
+    - namespace: "actions-runner-controller"
+      server: "https://kubernetes.default.svc"
+  sourceRepos:
+    - git@github.com:fotomerchant/eks-blueprints-add-ons.git
