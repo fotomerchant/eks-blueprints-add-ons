@@ -12,6 +12,8 @@ spec:
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
+  sourceNamespaces:
+    - '*'
   destinations:
     - namespace: "actions-runner-controller"
       server: "https://kubernetes.default.svc"
