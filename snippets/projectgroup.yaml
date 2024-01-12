@@ -42,6 +42,7 @@ spec:
     repoURL: 'git@github.com:fotomerchant/eks-blueprints-add-ons.git'
     targetRevision: feature/fep-7-blueprint-integration
     helm:
+      enable: true
       actions-runner-controller:
         enable: true
         createNamespace: true
