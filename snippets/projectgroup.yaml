@@ -13,39 +13,46 @@ spec:
     - group: '*'
       kind: '*'
   destinations:
-    - namespace: "actions-runner-controller"
-      server: "https://kubernetes.default.svc"
+    - namespace: actions-runner-controller
+      server: https://kubernetes.default.svc
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  sourceNamespaces:
+    - '*'
   sourceRepos:
     - git@github.com:fotomerchant/eks-blueprints-add-ons.git
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: "actions-runner-controller"
-  namespace: "argocd"
+  name: actions-runner-controller
+  namespace: argocd
   labels:
     env: jaytring
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: '2'
 spec:
-  project: default
   destination:
-    namespace: "actions-runner-controller"
-    server: "https://kubernetes.default.svc"
+    server: 'https://kubernetes.default.svc'
   source:
-    repoURL: git@github.com:fotomerchant/eks-blueprints-add-ons.git
-    targetRevision: feature/fep-7-blueprint-integration
     path: workflows/jaytring
+    repoURL: 'git@github.com:fotomerchant/eks-blueprints-add-ons.git'
+    targetRevision: feature/fep-7-blueprint-integration
     helm:
       enable: true
       createNamespace: true
       authSecret:
         create: true
         github_token: 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
+  sources: []
+  project: default
   syncPolicy:
     automated:
       prune: true
     syncOptions:
-      - CreateNamespace=false # Created with IaC - # https://github.com/argoproj/argo-cd/issues/7799
+      - CreateNamespace=true
+      - ServerSideApply=true  # Big CRDs.
+

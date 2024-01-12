@@ -12,10 +12,13 @@ spec:
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
+  destinations:
+    - namespace: actions-runner-controller
+      server: https://kubernetes.default.svc
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
   sourceNamespaces:
     - '*'
-  destinations:
-    - namespace: "actions-runner-controller"
-      server: "https://kubernetes.default.svc"
   sourceRepos:
     - git@github.com:fotomerchant/eks-blueprints-add-ons.git
