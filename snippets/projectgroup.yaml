@@ -37,18 +37,16 @@ metadata:
 spec:
   destination:
     server: 'https://kubernetes.default.svc'
+    namespace: "actions-runner-controller"
   source:
     path: workflows/jaytring
     repoURL: 'git@github.com:fotomerchant/eks-blueprints-add-ons.git'
     targetRevision: feature/fep-7-blueprint-integration
     helm:
       enable: true
-      actions-runner-controller:
-        enable: true
-        createNamespace: true
-        authSecret:
-          create: true
-          github_token: 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
+      authSecret:
+        create: true
+      createNamespace: true
   sources: []
   project: default
   syncPolicy:
@@ -56,5 +54,35 @@ spec:
       prune: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true  # Big CRDs.
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: actions-runner-controller
+  namespace: "argocd"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    path: workflows/jaytring
+    repoURL: 'git@github.com:fotomerchant/eks-blueprints-add-ons.git'
+    targetRevision: feature/fep-7-blueprint-integration
+    helm:
+      values: |
+        actions-runner-controller:
+          authSecret:
+            create: true
+            github_token: aaaa
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: actions-runner-system
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
 
