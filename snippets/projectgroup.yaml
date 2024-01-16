@@ -73,9 +73,8 @@ spec:
     helm:
       values: |
         actions-runner-controller:
-          authSecret:
-            create: true
-            github_token: aaaa
+          create: true
+          github_token: aaaa
   destination:
     server: "https://kubernetes.default.svc"
     namespace: actions-runner-system
@@ -85,4 +84,5 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - Replace=true
+      - ServerSideApply=true # Big CRDs.
 

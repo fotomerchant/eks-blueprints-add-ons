@@ -16,7 +16,6 @@ spec:
     targetRevision: {{ .Values.targetRevision }}
     helm:
       values: |
-        actions-runner-controller:
         {{- toYaml .Values.arc | nindent 10 }}
       parameters:
         - name: actions-runner-controller.authSecret.github_token
