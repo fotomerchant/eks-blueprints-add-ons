@@ -108,3 +108,34 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 ## License
 
 This library is licensed under the MIT-0 License. See the LICENSE file.
+
+
+Capability - NFR, integrations, maturity, customizability, 
+:put a list forward:
+
+- personas
+- customer experience
+ - Staff learning
+ - Automation
+ - Security / Frameworks
+ - tech debt outstanding (i.e. time to resolve)
+ - studio ninja: plans? who is involved from that side
+ - team approach BAU/Security/DevOps
+ - Maturity
+ - fall behind with consolidation over 2 years
+   - BAU vs Implementation
+- pattern library & standards
+- who is involved in business decisions like support when we make technical decisions
+
+small companies & big companies
+
+Stripe: 
+
+Capahility Model, NFRs, Maturity Model
+Team Leads and how that materializes with hiring
+
+Project needs to point to a HELM chart
+
+App Project : Application -> Helm Chart Repo
+ workflows/jaytring/values.yaml needs to point to helm chart somewhere.....
+ put the chart and values in a different directory

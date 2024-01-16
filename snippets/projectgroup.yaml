@@ -70,19 +70,13 @@ spec:
     path: workflows/jaytring
     repoURL: 'git@github.com:fotomerchant/eks-blueprints-add-ons.git'
     targetRevision: feature/fep-7-blueprint-integration
-    helm:
-      values: |
-        actions-runner-controller:
-          create: true
-          github_token: aaaa
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: actions-runner-system
+    namespace: workloads
   syncPolicy:
     automated:
       prune: true
     syncOptions:
       - CreateNamespace=true
       - Replace=true
-      - ServerSideApply=true # Big CRDs.
 

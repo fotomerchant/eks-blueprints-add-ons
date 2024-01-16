@@ -42,14 +42,16 @@ spec:
     repoURL: {{ .Values.spec.apps.arc.repoURL }}
     targetRevision: {{ .Values.spec.apps.arc.targetRevision }}
     path: {{ .Values.spec.apps.arc.path }}
-    helm:
-      enable: true
-      createNamespace: true
-      authSecret:
-        create: true
-        github_token:
+{{/*    helm:*/}}
+{{/*      actions-runner-controller:*/}}
+{{/*        enable: true*/}}
+{{/*        createNamespace: true*/}}
+{{/*        authSecret:*/}}
+{{/*          create: true*/}}
+{{/*          github_token: sss*/}}
   syncPolicy:
     automated:
       prune: true
     syncOptions:
-      - CreateNamespace=false # Created with IaC - # https://github.com/argoproj/argo-cd/issues/7799
+      - CreateNamespace=true # Created with IaC - # https://github.com/argoproj/argo-cd/issues/7799
+      - ServerSideApply=true # Big CRDs.

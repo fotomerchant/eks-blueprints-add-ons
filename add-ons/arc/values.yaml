@@ -2,4 +2,4 @@ enable: true
 createNamespace: true
 authSecret:
   create: true
-  github_token:
+  github_token: ssss
