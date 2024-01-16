@@ -3,3 +3,10 @@ createNamespace: true
 authSecret:
   create: true
   github_token: ssss
+
+actions-runner-controller:
+  enable: true
+  createNamespace: true
+  authSecret:
+    create: true
+    github_token: ssss

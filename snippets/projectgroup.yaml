@@ -58,7 +58,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: workloads
+  name: workloads2
   namespace: "argocd"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
