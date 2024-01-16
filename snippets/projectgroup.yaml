@@ -58,7 +58,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: actions-runner-controller
+  name: workloads
   namespace: "argocd"
   finalizers:
     - resources-finalizer.argocd.argoproj.io

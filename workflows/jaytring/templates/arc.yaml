@@ -2,29 +2,33 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: {{ .Values.spec.apps.arc.project | default "actions-runner-controller" }}
-  namespace: {{ .Values.argoProjectNamespace | default "argocd" }}
+  name: "actions-runner-controller"
+  namespace: "argocd"
   # Finalizer that ensures that project is not deleted until it is not referenced by any application
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
     argocd.argoproj.io/sync-wave: "1"
 spec:
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
   destinations:
-    - namespace: {{ .Values.spec.apps.arc.namespace | default "actions-runner-controller" }}
-      server: {{ .Values.destinationServer | default "https://kubernetes.default.svc" }}
-  sourceRepos:
-    - {{ .Values.spec.apps.arc.repoURL }}
-  {{- with .Values.sourceNamespaces }}
+    - namespace: actions-runner-controller
+      server: https://kubernetes.default.svc
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
   sourceNamespaces:
-    {{- toYaml .| nindent 4 }}
-  {{- end }}
+    - '*'
+  sourceRepos:
+    - git@github.com:fotomerchant/eks-blueprints-add-ons.git
 ---
 {{- end }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ .Values.spec.apps.arc.name | default "actions-runner-controller" }}
+  name: {{ .Values.spec.apps.arc.name | default "workloads" }}
   namespace: {{ .Values.argoNamespace | default "argocd" }}
 
   labels:
@@ -34,9 +38,9 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: {{ .Values.spec.apps.arc.project | default "actions-runner-controller" }}
+  project: {{ .Values.spec.apps.arc.project | default "workloads" }}
   destination:
-    namespace: {{ .Values.spec.apps.arc.namespace | default "actions-runner-controller" }}
+    namespace: {{ .Values.spec.apps.arc.namespace | default "workloads" }}
     server: {{ .Values.destinationServer | default .Values.spec.destination.server }}
   source:
     repoURL: {{ .Values.spec.apps.arc.repoURL }}
