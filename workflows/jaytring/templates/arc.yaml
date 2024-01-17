@@ -48,7 +48,7 @@ spec:
       values: |
         authSecret:
           create: true
-          github_token: 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
+          github_token: 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
     path: {{ .Values.spec.apps.arc.path }}
   syncPolicy:
     automated:
