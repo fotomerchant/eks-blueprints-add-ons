@@ -50,6 +50,9 @@ spec:
           authSecret:
             create: true
             github_token: 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
+          scope:
+            singleNamespace: true
+            watchNamespace: {{ .Values.spec.apps.arc.namespace }}
     path: {{ .Values.spec.apps.arc.path }}
   syncPolicy:
     automated:

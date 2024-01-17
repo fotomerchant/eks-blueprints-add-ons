@@ -11,6 +11,7 @@ spec:
     server: https://kubernetes.default.svc
   apps:
     arc:
+      namespace: jaytring
       createProject: true
       repoURL: git@github.com:fotomerchant/eks-blueprints-add-ons.git
       targetRevision: feature/fep-7-blueprint-integration
