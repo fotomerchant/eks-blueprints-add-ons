@@ -46,10 +46,9 @@ spec:
     targetRevision: {{ .Values.spec.apps.arc.targetRevision }}
     helm:
       values: |
-        actions-runner-controller:
-          authSecret:
-            create: true
-            github_token: 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
+        authSecret:
+          create: true
+          github_token: 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
     path: {{ .Values.spec.apps.arc.path }}
   syncPolicy:
     automated:
