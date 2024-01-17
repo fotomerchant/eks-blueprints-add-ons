@@ -49,7 +49,7 @@ spec:
         actions-runner-controller:
           authSecret:
             create: true
-            github_token: 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
+            github_token: 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
     path: {{ .Values.spec.apps.arc.path }}
   syncPolicy:
     automated:
