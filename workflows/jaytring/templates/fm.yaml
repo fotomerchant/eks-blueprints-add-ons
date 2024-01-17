@@ -46,7 +46,7 @@ spec:
     targetRevision: {{ .Values.spec.apps.fotomerchant.targetRevision }}
     helm:
       values: |
-        a=b
+        {{- toYaml .Values.spec.apps.fotomerchant.metadata | nindent 8}}
     path: {{ .Values.spec.apps.fotomerchant.path }}
   syncPolicy:
     automated:

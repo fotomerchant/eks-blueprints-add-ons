@@ -22,6 +22,16 @@ spec:
       repoURL: git@github.com:fotomerchant/eks-blueprints-add-ons.git
       targetRevision: feature/fep-7-blueprint-integration
       path: add-ons/fotomerchant
+      metadata:
+        awsAccountAlias: "jaytring"
+        awsRegion: "ap-southeast-2"
+        awsAccountId: "678155825749"
+        zone_53_portal_id: "Z06691222CMOGAZKB03ZH"
+        zone_53_id: "Z0843552C1UM9G3SV4XM"
+        max_node_size: 3
+        min_node_size: 2
+        clusterName: blue
+        route53_weight: 100
     keda:
       namespace: keda
       createProject: true
