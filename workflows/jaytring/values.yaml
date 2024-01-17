@@ -18,7 +18,7 @@ spec:
       path: add-ons/arc
     fotomerchant:
       namespace: fotomerchant
-      createProject: true
+      createProject: false
       repoURL: git@github.com:fotomerchant/eks-blueprints-add-ons.git
       targetRevision: feature/fep-7-blueprint-integration
       path: add-ons/fm
