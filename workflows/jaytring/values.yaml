@@ -12,10 +12,11 @@ spec:
   apps:
     arc:
       namespace: jaytring
-      createProject: true
+      createProject: false
       repoURL: git@github.com:fotomerchant/eks-blueprints-add-ons.git
       targetRevision: feature/fep-7-blueprint-integration
       path: add-ons/arc
+      token: pass_from_terraform_inject_via_variables_file
     fotomerchant:
       namespace: fotomerchant
       createProject: true
