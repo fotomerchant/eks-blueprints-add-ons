@@ -22,4 +22,10 @@ spec:
       repoURL: git@github.com:fotomerchant/eks-blueprints-add-ons.git
       targetRevision: feature/fep-7-blueprint-integration
       path: add-ons/fm
+    keda:
+      namespace: keda
+      createProject: true
+      repoURL: git@github.com:fotomerchant/eks-blueprints-add-ons.git
+      targetRevision: feature/fep-7-blueprint-integration
+      path: add-ons/keda
 
