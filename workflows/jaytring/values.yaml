@@ -11,16 +11,16 @@ spec:
     server: https://kubernetes.default.svc
   apps:
     arc:
-      createProject: false
+      createProject: true
       repoURL: git@github.com:fotomerchant/eks-blueprints-add-ons.git
       targetRevision: feature/fep-7-blueprint-integration
       path: add-ons/arc
 
-      helm:
-        values: |-
-          enable: true
-          createNamespace: true
-          authSecret:
-            create: true
-            github_token: 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
+#      helm:
+#        values: |-
+#          enable: true
+#          createNamespace: true
+#          authSecret:
+#            create: true
+#            github_token: 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
 

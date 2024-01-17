@@ -13,11 +13,6 @@ spec:
     path: workflows/jaytring
     repoURL: 'git@github.com:fotomerchant/eks-blueprints-add-ons.git'
     targetRevision: feature/fep-7-blueprint-integration
-    helm:
-      spec:
-        apps:
-          arc:
-            createProject: false
   destination:
     server: "https://kubernetes.default.svc"
     namespace: workloads
