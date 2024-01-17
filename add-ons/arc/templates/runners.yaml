@@ -1,7 +1,7 @@
 apiVersion: actions.summerwind.dev/v1alpha1
 kind: RunnerDeployment
 metadata:
-  name: eks-arc-runners
+  name: eks-arc-runners-v5
   annotations:
     argocd.argoproj.io/sync-wave: "5"
 spec:
@@ -16,7 +16,7 @@ spec:
               - key: runner-deployment-name
                 operator: In
                 values:
-                - eks-arc-runners
+                - eks-arc-runners-v5
             topologyKey: "kubernetes.io/hostname"
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -32,10 +32,10 @@ spec:
 apiVersion: actions.summerwind.dev/v1alpha1
 kind: HorizontalRunnerAutoscaler
 metadata:
-  name: eks-arc-runners-deployment-autoscaler
+  name: eks-arc-runners-v5-deployment-autoscaler
 spec:
   scaleTargetRef:
-    name: eks-arc-runners
+    name: eks-arc-runners-v5
   minReplicas: 3
   maxReplicas: 3
   scaleUpTriggers:
