@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: workflows
+  namespace: "argocd"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    path: workflows/jaytring
+    repoURL: 'git@github.com:fotomerchant/eks-blueprints-add-ons.git'
+    targetRevision: feature/fep-7-blueprint-integration
+    helm:
+      spec:
+        apps:
+          arc:
+            createProject: false
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: workloads
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true

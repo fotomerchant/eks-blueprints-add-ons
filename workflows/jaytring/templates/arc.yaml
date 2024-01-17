@@ -24,7 +24,6 @@ spec:
   sourceRepos:
     - git@github.com:fotomerchant/eks-blueprints-add-ons.git
 ---
-{{- end }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -46,16 +45,10 @@ spec:
     repoURL: {{ .Values.spec.apps.arc.repoURL }}
     targetRevision: {{ .Values.spec.apps.arc.targetRevision }}
     path: {{ .Values.spec.apps.arc.path }}
-{{/*    helm:*/}}
-{{/*      actions-runner-controller:*/}}
-{{/*        enable: true*/}}
-{{/*        createNamespace: true*/}}
-{{/*        authSecret:*/}}
-{{/*          create: true*/}}
-{{/*          github_token: sss*/}}
   syncPolicy:
     automated:
       prune: true
     syncOptions:
       - CreateNamespace=true # Created with IaC - # https://github.com/argoproj/argo-cd/issues/7799
       - ServerSideApply=true # Big CRDs.
+{{- end }}
