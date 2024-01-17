@@ -4,3 +4,8 @@ actions-runner-controller:
   authSecret:
     create: true
     github_token: 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
+enable: true
+createNamespace: true
+authSecret:
+  create: true
+  github_token: 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
