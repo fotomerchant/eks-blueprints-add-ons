@@ -14,7 +14,7 @@ spec:
     - group: '*'
       kind: '*'
   destinations:
-    - namespace: actions-runner-controller
+    - namespace: '*'
       server: https://kubernetes.default.svc
   namespaceResourceWhitelist:
     - group: '*'
