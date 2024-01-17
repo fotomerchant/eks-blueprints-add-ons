@@ -1,0 +1,65 @@
+{{- if .Values.apps.ai.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.apps.ai.name }}
+  namespace: fmhv
+  labels:
+    app: {{ .Values.apps.ai.name }}
+    group: sync
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: {{ .Values.apps.ai.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.apps.ai.name }}
+    spec:
+      {{ if .Values.apps.ai.opn }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ .Values.apps.ai.name }}
+              topologyKey: "kubernetes.io/hostname"
+      {{ end }}
+      serviceAccountName: {{ .Values.apps.service_account }}
+      containers:
+      - name: app
+        image: "{{ .Values.apps.repository }}appaibundle:{{ .Values.apps.ai.revision }}"
+        imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+        args:
+        - -o
+        - appnginx
+        env:
+        - name: ACCOUNT_ALIAS
+          value: "{{ .Values.awsAccountAlias }}"
+        - name: APP_NAME
+          value: "ai"
+        - name: AWS_REGION
+          value: "{{ .Values.awsRegion }}"
+        volumeMounts:
+        - name: symfonyenv-volume
+          mountPath: /usr/src/app/.env
+          subPath: symfony.ai.env
+        resources:
+          requests:
+            cpu: "300m"
+            memory: "150Mi"
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      volumes:
+        - name: config-volume
+          configMap:
+            name: configuration
+        - name: symfonyenv-volume
+          configMap:
+            name: configuration
+      restartPolicy: Always
+{{- end }}

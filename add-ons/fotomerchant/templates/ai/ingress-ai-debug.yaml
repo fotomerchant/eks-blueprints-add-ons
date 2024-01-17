@@ -1,0 +1,27 @@
+{{- if .Values.apps.ai.debug -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.apps.ai.name }}-dbg
+  namespace: fmhv
+  annotations:
+    {{- printf .Values.apps.ingress_definition | nindent 4 }}
+    external-dns.alpha.kubernetes.io/set-identifier: "{{ .Values.clusterName }}"
+    external-dns.alpha.kubernetes.io/aws-weight: "{{ .Values.route53_weight }}"
+spec:
+  tls:
+  - hosts:
+    - backenddebug.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    secretName: cert-ai-debug
+  rules:
+  - host: backenddebug.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: {{ .Values.apps.ai.name }}-dbg
+              port:
+                number: 80
+{{- end }}

@@ -1,0 +1,49 @@
+{{- if .Values.apps.console.enabled -}}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-automations-group2
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: automations-group2
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-image_automation
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-automations-group2-1
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: automations-group2-1
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-image_enhancements
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-automations-group2-2
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: automations-group2-2
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-msg-image_cropping
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+{{- end }}

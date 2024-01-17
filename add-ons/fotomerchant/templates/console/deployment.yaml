@@ -1,0 +1,119 @@
+# {{- if eq (default .Values.console_enabled true) true }}
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: app-console
+#   namespace: fmhv
+#   labels:
+#     app: app-console
+#     group: sync
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: app-console
+#   template:
+#     metadata:
+#       labels:
+#         app: app-console
+#     spec:
+#       affinity:
+#         nodeAffinity:
+#           requiredDuringSchedulingIgnoredDuringExecution:
+#             nodeSelectorTerms:
+#               - matchExpressions:
+#                 - key: "kubernetes.io/arch"
+#                   operator: In
+#                   values: ["amd64"]
+#       serviceAccountName: fmhv-app
+#       containers:
+#       - name: app-console-group1
+#         image: "ghcr.io/fotomerchant/hv/appconsolebundle:latest"
+#         ImagePullPolicy: {{ .Values.apps.image_pull_policy }}
+#         volumeMounts:
+#         - name: config-volume
+#           mountPath: /etc/supervisor/conf.d/supervisord.conf
+#           subPath: testing-config.yaml
+#         {{- if eq (default .Values.doctrineCache true) false }}
+#         - name: disable-cache-volume
+#           mountPath: /usr/src/app/config/packages/lsw_memcache.yaml
+#           subPath: config.yaml
+#         {{- end }}
+#         - name: symfonyenv-volume
+#           mountPath: /usr/src/app/.env
+#           subPath: symfony.console.env
+#       imagePullSecrets:
+#         - name: eks-argocd-github-packages-token
+#       volumes:
+#         - name: config-volume
+#           configMap:
+#             name: configuration
+#         {{- if eq (default .Values.doctrineCache true) false }}
+#         - name: disable-cache-volume
+#           configMap:
+#             name: disable-cache
+#         {{- end }}
+#         - name: symfonyenv-volume
+#           configMap:
+#             name: configuration
+#       restartPolicy: Always
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: app-console2
+#   namespace: fmhv
+#   labels:
+#     app: app-console2
+#     group: sync
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: app-console2
+#   template:
+#     metadata:
+#       labels:
+#         app: app-console2
+#     spec:
+#       affinity:
+#         nodeAffinity:
+#           requiredDuringSchedulingIgnoredDuringExecution:
+#             nodeSelectorTerms:
+#               - matchExpressions:
+#                 - key: "kubernetes.io/arch"
+#                   operator: In
+#                   values: ["arm64"]
+#       serviceAccountName: fmhv-app
+#       containers:
+#       - name: app-console-group1
+#         image: "ghcr.io/fotomerchant/hv/appconsolebundle:latest"
+#         ImagePullPolicy: {{ .Values.apps.image_pull_policy }}
+#         volumeMounts:
+#         - name: config-volume
+#           mountPath: /etc/supervisor/conf.d/supervisord.conf
+#           subPath: testing-config.yaml
+#         {{- if eq (default .Values.doctrineCache true) false }}
+#         - name: disable-cache-volume
+#           mountPath: /usr/src/app/config/packages/lsw_memcache.yaml
+#           subPath: config.yaml
+#         {{- end }}
+#         - name: symfonyenv-volume
+#           mountPath: /usr/src/app/.env
+#           subPath: symfony.console.env
+#       imagePullSecrets:
+#         - name: eks-argocd-github-packages-token
+#       volumes:
+#         - name: config-volume
+#           configMap:
+#             name: configuration
+#         {{- if eq (default .Values.doctrineCache true) false }}
+#         - name: disable-cache-volume
+#           configMap:
+#             name: disable-cache
+#         {{- end }}
+#         - name: symfonyenv-volume
+#           configMap:
+#             name: configuration
+#       restartPolicy: Always
+# {{- end }}

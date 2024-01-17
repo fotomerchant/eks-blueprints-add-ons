@@ -1,0 +1,23 @@
+# apiVersion: keda.sh/v1alpha1
+# kind: ScaledObject
+# metadata:
+#   name: aws-sqs-queue-scaledobject
+#   namespace: fmhv
+# spec:
+#   scaleTargetRef:
+#     # must be a specific deployment per HPA
+#     name: ai-web2
+#   triggers:
+#   - type: aws-sqs-queue
+#     # authenticationRef:
+#     #   name: keda-trigger-auth-aws-credentials
+#     metadata:
+#       # Required: queueURL or queueURLFromEnv. If both provided, uses queueURL
+#       queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-batch_job_files
+#       queueURLFromEnv: QUEUE_URL # Optional. You can use this instead of `queueURL` parameter
+#       queueLength: "50"  # Default: "5"
+#       # Required: awsRegion
+#       awsRegion: "{{ .Values.awsRegion }}"
+#       # Optional: awsEndpoint
+#       # awsEndpoint: ""
+#       identityOwner: operator # Optional. Default: pod

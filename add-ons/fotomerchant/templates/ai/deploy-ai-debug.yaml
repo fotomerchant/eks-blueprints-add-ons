@@ -1,0 +1,55 @@
+{{- if .Values.apps.ai.debug -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-debug
+  namespace: fmhv
+  labels:
+    app: {{ .Values.apps.ai.name }}-dbg
+    group: sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.apps.ai.name }}-dbg
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.apps.ai.name }}-dbg
+    spec:
+      serviceAccountName: {{ .Values.apps.service_account }}
+      containers:
+      - name: app
+        image: "{{ .Values.apps.repository }}appaibundle:{{ .Values.apps.ai.revision }}"
+        imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+        args:
+        - -o
+        - debug
+        env:
+        - name: ACCOUNT_ALIAS
+          value: "{{ .Values.awsAccountAlias }}"
+        - name: APP_NAME
+          value: "ai"
+        - name: AWS_REGION
+          value: "{{ .Values.awsRegion }}"
+        - name: APP_ENV
+          value: debug
+        volumeMounts:
+        - name: symfonyenv-volume
+          mountPath: /usr/src/app/.env
+          subPath: symfony.ai.env
+        resources:
+          requests:
+            cpu: "400m"
+            memory: "300Mi"
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      volumes:
+        - name: config-volume
+          configMap:
+            name: configuration
+        - name: symfonyenv-volume
+          configMap:
+            name: configuration
+      restartPolicy: Always
+{{- end }}

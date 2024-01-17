@@ -1,0 +1,49 @@
+{{- if .Values.apps.console.enabled -}}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-standard-group4
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: standard-group4
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-client_sessions
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-standard-group4-1
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: standard-group4-1
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-msg-client_sessions
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-standard-group4-2
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: standard-group4-2
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-msg-batch_job_files
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+{{- end }}

@@ -1,0 +1,31 @@
+{{- if .Values.apps.mi.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mi-smoke
+  generateName: mi-smoke
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+spec:
+  template:
+    spec:
+      containers:
+      - name: smoketests
+        image: "{{ .Values.apps.repository }}appmibundlesmoke:{{ .Values.apps.mi.smoke_revision }}"
+        imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+        args:
+        - -o
+        - app
+        volumeMounts:
+        - name: symfonyenv-volume
+          mountPath: /app/config.toml
+          subPath: mismoke.toml
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      volumes:
+        - name: symfonyenv-volume
+          configMap:
+            name: configuration
+      restartPolicy: OnFailure
+  backoffLimit: 4
+{{- end }}

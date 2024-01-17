@@ -1,0 +1,49 @@
+{{- if .Values.apps.console.enabled -}}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-imgops-group2
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: imageops-group2
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-cloud_storage_uploads
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-imgops-group2-1
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: imageops-group2-1
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-image_operations
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-imgops-group2-2
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: imageops-group2-2
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-import_jobs
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+{{- end }}

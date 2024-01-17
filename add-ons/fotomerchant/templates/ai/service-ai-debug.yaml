@@ -1,0 +1,21 @@
+{{- if .Values.apps.ai.debug -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.apps.ai.name }}-dbg
+  namespace: fmhv
+  labels:
+    app: {{ .Values.apps.ai.name }}-dbg
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 9000
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: 9000
+  selector:
+    app: {{ .Values.apps.ai.name }}-dbg
+{{- end }}

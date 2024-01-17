@@ -1,0 +1,715 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configuration
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-10"
+  namespace: fmhv
+data:
+  labsmoke.toml: |
+    admin_interface_url="https://lab.{{ .Values.awsAccountAlias }}.fotomerchanthv.com"
+    invalid_username="wontonsoup@fotomerchant.com"
+    invalid_password="yummmmy"
+    valid_username="marcouser"
+    valid_password="testuser"
+
+  aismoke.toml: |
+    admin_interface_url="https://backend.{{ .Values.awsAccountAlias }}.fotomerchanthv.com"
+    invalid_username="wontonsoup@fotomerchant.com"
+    invalid_password="yummmmy"
+    valid_username="support.user@fotomerchant.com"
+    valid_password="support"
+
+  mismoke.toml: |
+    admin_interface_url="https://admin.{{ .Values.awsAccountAlias }}.fotomerchanthv.com"
+    invalid_username="wontonsoup@fotomerchant.com"
+    invalid_password="yummmmy"
+    valid_username="hv001@fotomerchant.com"
+    valid_password="testuser"
+
+  symfony.env: |
+    MEMCACHE_HOST=cache.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST=db.writer.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST_READER=db.reader.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MESSENGER_ENV=hv
+    QUEUE_ENV=hv
+    ENVIRONMENT_ALIAS={{ .Values.awsAccountAlias }}
+    ENVIRONMENT_CLUSTER={{ .Values.clusterName }}
+    AWS_REGION={{ .Values.awsRegion }}
+    AWS_ACCOUNT={{ .Values.awsAccountId }}
+    AWS_ACCESS_KEY_ID=
+    AWS_SECRET_ACCESS_KEY=
+    MONGO_HOST=docdb.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MONGO_PASSWORD_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:docdb-v1
+    MYSQL_USER_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:mysqldb-v1
+
+  symfony.console.env: |
+    MEMCACHE_HOST=cache.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST=db.writer.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST_READER=db.reader.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MESSENGER_ENV=hv
+    QUEUE_ENV=hv
+    ENVIRONMENT_ALIAS={{ .Values.awsAccountAlias }}
+    ENVIRONMENT_CLUSTER={{ .Values.clusterName }}
+    AWS_REGION=
+    AWS_ACCOUNT=
+    AWS_ACCESS_KEY_ID=
+    AWS_SECRET_ACCESS_KEY=
+    MONGO_HOST=docdb.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MONGO_PASSWORD_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:docdb-v1
+    MYSQL_USER_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:mysqldb-v1
+    APP_ENV={{- ternary "debug" "prod" .Values.apps.console.debug }}
+
+  symfony.ai.env: |
+    APP_NAME=ai
+    MEMCACHE_HOST=cache.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST=db.writer.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST_READER=db.reader.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MESSENGER_ENV=hv
+    QUEUE_ENV=hv
+    ENVIRONMENT_ALIAS={{ .Values.awsAccountAlias }}
+    ENVIRONMENT_CLUSTER={{ .Values.clusterName }}
+    AWS_REGION={{ .Values.awsRegion }}
+    AWS_ACCOUNT={{ .Values.awsAccountId }}
+    AWS_ACCESS_KEY_ID=
+    AWS_SECRET_ACCESS_KEY=
+    SESSION_NAME=FMAI_{{ .Values.awsAccountAlias }}_{{ .Values.clusterName }}
+    MONGO_HOST=docdb.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MONGO_PASSWORD_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:docdb-v1
+    MYSQL_USER_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:mysqldb-v1
+    APP_ENV={{- ternary "debug" "prod" .Values.apps.ai.debug }}
+
+    TRUSTED_PROXIES=127.0.0.1,REMOTE_ADDR
+
+  symfony.mi.env: |
+    APP_NAME=mi
+    MEMCACHE_HOST=cache.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST=db.writer.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST_READER=db.reader.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MESSENGER_ENV=hv
+    QUEUE_ENV=hv
+    ENVIRONMENT_ALIAS={{ .Values.awsAccountAlias }}
+    ENVIRONMENT_CLUSTER={{ .Values.clusterName }}
+    AWS_REGION={{ .Values.awsRegion }}
+    AWS_ACCOUNT={{ .Values.awsAccountId }}
+    AWS_ACCESS_KEY_ID=
+    AWS_SECRET_ACCESS_KEY=
+    SESSION_NAME=FMAI_{{ .Values.awsAccountAlias }}_{{ .Values.clusterName }}
+    MONGO_HOST=docdb.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MONGO_PASSWORD_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:docdb-v1
+    MYSQL_USER_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:mysqldb-v1
+    APP_ENV={{- ternary "debug" "prod" .Values.apps.mi.debug }}
+
+    TRUSTED_PROXIES=127.0.0.1,REMOTE_ADDR
+
+  symfony.hvt.env: |
+    APP_NAME=hvt
+    MEMCACHE_HOST=cache.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST=db.writer.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST_READER=db.reader.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MESSENGER_ENV=hv
+    QUEUE_ENV=hv
+    ENVIRONMENT_ALIAS={{ .Values.awsAccountAlias }}
+    ENVIRONMENT_CLUSTER={{ .Values.clusterName }}
+    AWS_REGION={{ .Values.awsRegion }}
+    AWS_ACCOUNT={{ .Values.awsAccountId }}
+    AWS_ACCESS_KEY_ID=
+    AWS_SECRET_ACCESS_KEY=
+    SESSION_NAME=FMHVT_{{ .Values.awsAccountAlias }}_{{ .Values.clusterName }}
+    MONGO_HOST=docdb.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MONGO_PASSWORD_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:docdb-v1
+    MYSQL_USER_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:mysqldb-v1
+    APP_ENV={{- ternary "debug" "prod" .Values.apps.hvt.debug }}
+
+    TRUSTED_PROXIES=127.0.0.1,REMOTE_ADDR
+
+  symfony.lab.env: |
+    APP_NAME=lab
+    MEMCACHE_HOST=cache.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST=db.writer.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST_READER=db.reader.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MESSENGER_ENV=hv
+    QUEUE_ENV=hv
+    ENVIRONMENT_ALIAS={{ .Values.awsAccountAlias }}
+    ENVIRONMENT_CLUSTER={{ .Values.clusterName }}
+    AWS_REGION={{ .Values.awsRegion }}
+    AWS_ACCOUNT={{ .Values.awsAccountId }}
+    AWS_ACCESS_KEY_ID=
+    AWS_SECRET_ACCESS_KEY=
+    SESSION_NAME=FMLAB_{{ .Values.awsAccountAlias }}_{{ .Values.clusterName }}
+    MONGO_HOST=docdb.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MONGO_PASSWORD_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:docdb-v1
+    MYSQL_USER_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:mysqldb-v1
+    APP_ENV={{- ternary "debug" "prod" .Values.apps.lab.debug }}
+
+    TRUSTED_PROXIES=127.0.0.1,REMOTE_ADDR
+
+  symfony.api.env: |
+    APP_NAME=api
+    MEMCACHE_HOST=cache.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST=db.writer.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST_READER=db.reader.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MESSENGER_ENV=hv
+    QUEUE_ENV=hv
+    ENVIRONMENT_ALIAS={{ .Values.awsAccountAlias }}
+    ENVIRONMENT_CLUSTER={{ .Values.clusterName }}
+    AWS_REGION={{ .Values.awsRegion }}
+    AWS_ACCOUNT={{ .Values.awsAccountId }}
+    AWS_ACCESS_KEY_ID=
+    AWS_SECRET_ACCESS_KEY=
+    SESSION_NAME=FMAPI_{{ .Values.awsAccountAlias }}_{{ .Values.clusterName }}
+    MONGO_HOST=docdb.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MONGO_PASSWORD_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:docdb-v1
+    MYSQL_USER_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:mysqldb-v1
+    APP_ENV={{- ternary "debug" "prod" .Values.apps.api.debug }}
+
+    TRUSTED_PROXIES=127.0.0.1,REMOTE_ADDR
+
+  symfony.portal.env: |
+    APP_NAME=portal
+    MEMCACHE_HOST=cache.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST=db.writer.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MYSQL_HOST_READER=db.reader.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MESSENGER_ENV=hv
+    QUEUE_ENV=hv
+    ENVIRONMENT_ALIAS={{ .Values.awsAccountAlias }}
+    ENVIRONMENT_CLUSTER={{ .Values.clusterName }}
+    AWS_REGION={{ .Values.awsRegion }}
+    AWS_ACCOUNT={{ .Values.awsAccountId }}
+    AWS_ACCESS_KEY_ID=
+    AWS_SECRET_ACCESS_KEY=
+    SESSION_NAME=FMPORTAL_{{ .Values.awsAccountAlias }}_{{ .Values.clusterName }}
+    MONGO_HOST=docdb.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    MONGO_PASSWORD_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:docdb-v1
+    MYSQL_USER_SECRET=arn:aws:secretsmanager:{{ .Values.awsRegion }}:{{ .Values.awsAccountId }}:secret:mysqldb-v1
+    APP_ENV={{- ternary "debug" "prod" .Values.apps.portal.debug }}
+
+    TRUSTED_PROXIES=127.0.0.1,REMOTE_ADDR
+
+  automations-group1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'automations-group1:'
+
+    [program:fm_queue_image_knockouts]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_image_knockouts.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.image_knockouts" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_image_knockouts.iterations | default 100 }}
+
+  automations-group1-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'automations-group1-1:'
+
+    [program:fm_queue_image_cropping]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_image_cropping.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.image_cropping" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_image_cropping.iterations | default 100 }}
+
+  automations-group1-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'automations-group1-2:'
+
+    [program:msg_fm_queue_image_automation]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.msg_fm_queue_image_automation.numprocs | default 1 }}
+    command=bin/console messenger:consume image_automation {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --limit={{- .Values.apps.console.msg_fm_queue_image_automation.limit | default 1 }}
+
+  automations-group2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'automations-group2:'
+
+    [program:fm_queue_image_automation]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_image_automation.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.image_automation" {{ .Values.apps.console.debug | ternary "" "--no-debug" }}  --iteration={{- .Values.apps.console.fm_queue_image_automation.iterations | default 100 }}
+
+  automations-group2-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'automations-group2-1:'
+
+    [program:fm_queue_image_enhancements]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_image_enhancements.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.image_enhancements" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_image_enhancements.iterations | default 100 }}
+
+  automations-group2-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'automations-group2-2:'
+
+    [program:msg_fm_queue_image_cropping]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.msg_fm_queue_image_cropping.numprocs | default 1 }}
+    command=bin/console messenger:consume image_cropping {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --limit={{- .Values.apps.console.msg_fm_queue_image_cropping.limit | default 1 }}
+
+  faceops-group1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'faceops-group1:'
+
+    [program:fm_queue_face_indexing]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_face_indexing.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.face_indexing" --iteration={{- .Values.apps.console.fm_queue_face_indexing.iteration | default 100 }}
+
+  faceops-group1-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'faceops-group1-1:'
+
+    [program:fm_queue_face_collation]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_face_collation.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.face_collation" --iteration={{- .Values.apps.console.fm_queue_face_collation.iteration | default 100 }}
+
+  faceops-group1-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'faceops-group1-2:'
+
+    [program:msg_fm_queue_face_deletion]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.msg_fm_queue_face_deletion.numprocs | default 1 }}
+    command=bin/console messenger:consume face_deletion --limit={{- .Values.apps.console.msg_fm_queue_face_deletion.limit | default 1 }}
+
+  faceops-group2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'faceops-group2:'
+
+    [program:fm_queue_face_deletion]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_face_deletion.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.face_deletion" --iteration={{- .Values.apps.console.fm_queue_image_enhancements.iteration | default 100 }}
+
+
+  faceops-group2-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'faceops-group2-1:'
+
+    [program:msg_fm_queue_face_collation]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.msg_fm_queue_face_collation.numprocs | default 1 }}
+    command=bin/console messenger:consume face_collation {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --limit={{- .Values.apps.console.msg_fm_queue_image_cropping.limit | default 1 }}
+
+  faceops-group2-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'faceops-group2-2:'
+
+    [program:msg_fm_queue_face_indexing]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.msg_fm_queue_face_indexing.numprocs | default 1 }}
+    command=bin/console messenger:consume face_indexing {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --limit={{- .Values.apps.console.msg_fm_queue_face_indexing.limit | default 1 }}
+
+  imageops-group1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'imageops-group1:'
+
+    [program:fm_queue_image_uploads]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs=1
+    command=bin/console fm:notification:start --backend="fm_core.queue.image_uploads" {{ .Values.apps.console.debug | ternary "" "--no-debug" }}
+
+  imageops-group1-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'imageops-group1-1:'
+
+    [program:fm_queue_cloud_storage_file_ops]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs=1
+    command=bin/console fm:notification:start --backend="fm_core.queue.cloud_storage_file_ops" {{ .Values.apps.console.debug | ternary "" "--no-debug" }}
+
+  imageops-group1-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'imageops-group1-1:'
+
+    [program:fm_queue_plic_subjects]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs=1
+    command=bin/console fm:notification:start --backend="fm_core.queue.plic_subjects" {{ .Values.apps.console.debug | ternary "" "--no-debug" }}
+
+  imageops-group2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'imageops-group2:'
+
+    [program:fm_queue_cloud_storage_uploads]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_cloud_storage_uploads.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.cloud_storage_uploads" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_cloud_storage_uploads.iteration | default 100 }}
+
+  imageops-group2-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'imageops-group2-1:'
+
+    [program:fm_queue_image_ops]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_image_ops.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.image_ops" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_image_ops.iteration | default 100 }}
+
+  imageops-group2-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'imageops-group2:'
+
+    [program:fm_queue_import_jobs]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_import_jobs.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.import_jobs" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_import_jobs.iteration | default 100 }}
+
+  reporting-group1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'reporting-group1:'
+
+    [program:fm_queue_reporting]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_reporting.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.reporting" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_reporting.iteration | default 1 }}
+
+  rendering-group1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'rendering-group1:'
+
+    [program:fm_queue_render_jobs]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs=1
+    command=bin/console fm:notification:start --backend="fm_core.queue.render_jobs" --iteration=100 {{ .Values.apps.console.debug | ternary "" "--no-debug" }}
+
+  rendering-group1-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'rendering-group1-1:'
+
+    [program:fm_queue_render_job_check]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs=1
+    command=bin/console fm:notification:start --backend="fm_core.queue.render_job_check" --iteration=1 {{ .Values.apps.console.debug | ternary "" "--no-debug" }}
+
+  rendering-group2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'rendering-group2:'
+
+    [program:fm_queue_render_job_item_status]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_render_job_item_status.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.render_job_item_status" --iteration=100 {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_render_job_item_status.iteration | default 100 }}
+
+  rendering-group2-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'rendering-group2-1:'
+
+    [program:fm_queue_render_item_deleted]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_render_item_deleted.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.render_item_deleted" --iteration=100 {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_render_item_deleted.iteration | default 100 }}
+
+  orders-group1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'orders-group1:'
+
+    [program:fm_queue_order_actions]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_order_actions.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.order_actions" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_order_actions.iteration | default 100 }}
+
+  orders-group1-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'orders-group1-1:'
+
+    [program:fm_queue_orders]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_orders.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.orders" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_orders.iteration | default 100 }}
+
+  orders-group1-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'orders-group1-2:'
+
+    [program:fm_queue_supplier_orders]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_supplier_orders.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.supplier_orders" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_supplier_orders.iteration | default 100 }}
+
+  orders-group2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'orders-group2:'
+
+    [program:fm_queue_order_items]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_order_items.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.order_items" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_order_items.iteration | default 100 }}
+
+  orders-group2-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'orders-group2-1:'
+
+    [program:fm_queue_build_order_item_job]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_build_order_item_job.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.order_item_build_job" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_build_order_item_job.iteration | default 100 }}
+
+  orders-group2-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'orders-group2-2:'
+
+    [program:fm_queue_order_node_evaluation]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_order_node_evaluation.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.order_node_evaluation" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_order_node_evaluation.iteration | default 100 }}
+
+  orders-group3-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'orders-group3:'
+
+    [program:fm_queue_order_distribution_dd]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_order_distribution_dd.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.order_distribution_dd" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_order_distribution_dd.iteration | default 100 }}
+
+  orders-group3-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'orders-group3-1:'
+
+    [program:fm_queue_order_distribution_df]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_order_distribution_df.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.order_distribution_df" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_order_distribution_df.iteration | default 100 }}
+
+  orders-group3-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'orders-group3-2:'
+
+    [program:fm_queue_batch_order_item_check]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_batch_order_item_check.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.batch_order_item_check" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_batch_order_item_check.iteration | default 100 }}
+
+  orders-group4-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'orders-group4:'
+
+    [program:fm_queue_plic_orders]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_plic_orders.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.plic_orders" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_plic_orders.iteration | default 100 }}
+
+  orders-group4-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'orders-group4-1:'
+
+    [program:fm_queue_batch_order_item_build_job]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_batch_order_item_build_job.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.batch_order_item_build_job" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_batch_order_item_build_job.iteration | default 100 }}
+
+  orders-group4-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'orders-group4-2:'
+
+    [program:fm_queue_batch_order_distribution]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_batch_order_distribution.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.batch_order_distribution" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_batch_order_distribution.iteration | default 100 }}
+
+  standard-group1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group1:'
+
+    [program:fm_queue_email]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_email.numprocs | default 1 }}
+    command=bin/console messenger:consume email_command_async {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --limit={{- .Values.apps.console.fm_queue_email.limit | default 1 }}
+
+  standard-group1-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group1:'
+
+    [program:fm_queue_sms]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_sms.numprocs | default 1 }}
+    command=bin/console messenger:consume sms_command_async {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --limit={{- .Values.apps.console.fm_queue_sms.limit | default 1 }}
+
+  standard-group1-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group1:'
+
+    [program:fm_queue_subjects]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_subjects.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.subjects" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_subjects.iteration | default 100 }}
+
+  standard-group3-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group3:'
+
+    [program:fm_queue_cloud_storage]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_cloud_storage.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.cloud_storage" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_cloud_storage.iteration | default 100 }}
+
+  standard-group4-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group4:'
+
+    [program:fm_queue_client_sessions]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_client_sessions.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.client_sessions" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_client_sessions.iteration | default 100 }}
+
+  standard-group4-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group4-1:'
+
+    [program:msg_fm_queue_client_sessions]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.msg_fm_queue_client_sessions.numprocs | default 1 }}
+    command=bin/console messenger:consume client_sessions --limit={{- .Values.apps.console.msg_fm_queue_client_sessions.limit | default 1 }}
+
+  standard-group4-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group4-2:'
+
+    [program:msg_fm_queue_batch_job_files]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.msg_fm_queue_batch_job_files.numprocs | default 1 }}
+    command=bin/console messenger:consume batch_job_files --limit={{- .Values.apps.console.msg_fm_queue_batch_job_files.limit | default 1 }}
+
+  standard-group5-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group5:'
+
+    [program:fm_queue_batch_job_files]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_batch_job_files.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.batch_job_files" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_batch_job_files.iteration | default 100 }}
+
+  standard-group5-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group5-1:'
+
+    [program:fm_queue_plic]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_plic.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.plic" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_plic.iteration | default 100 }}
+
+  standard-group5-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group5-2:'
+
+    [program:fm_queue_billable_events]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_billable_events.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.billable_events" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_billable_events.iteration | default 100 }}
+
+  standard-group6-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group6:'
+
+    [program:msg_fm_queue_billable_events]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.msg_fm_queue_billable_events.numprocs | default 1 }}
+    command=bin/console messenger:consume billable_event --limit={{- .Values.apps.console.msg_fm_queue_billable_events.limit | default 1 }}    
+
+  standard-group6-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group6-1:'
+
+    [program:msg_fm_queue_service_details]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.msg_fm_queue_service_details.numprocs | default 1 }}
+    command=bin/console messenger:consume service_detail --limit={{- .Values.apps.console.msg_fm_queue_service_details.limit | default 1 }}
+
+
+  standard-group6-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group6-2:'
+
+    [program:fm_queue_trackable_events]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_trackable_events.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.trackable_events" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_trackable_events.iteration | default 100 }}
+
+  standard-group7-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group7:'
+
+    [program:fm_queue_trackable_events_s3]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_trackable_events_s3.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.trackable_events_s3" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_trackable_events_s3.iteration | default 100 }}
+
+  standard-group7-1-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group7-1:'
+
+    [program:msg_fm_queue_trackable_events]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.msg_fm_queue_trackable_events.numprocs | default 1 }}
+    command=bin/console messenger:consume trackable_event_async --limit={{- .Values.apps.console.msg_fm_queue_trackable_events.limit | default 1 }}
+
+  standard-group7-2-config.yaml: |
+    {{- printf .Values.apps.console.supervisord_configuration | nindent 4 }}
+    name = 'standard-group7-2:'
+
+    [program:msg_fm_queue_trackable_events_s3]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.msg_fm_queue_trackable_events_s3.numprocs | default 1 }}
+    command=bin/console messenger:consume trackable_event_s3_async --limit={{- .Values.apps.console.msg_fm_queue_trackable_events_s3.limit | default 1 }}
+
+  standard-group8-config.yaml: |
+    [supervisorctl]
+    serverurl = unix:///tmp/supervisor.sock
+    prompt = mysupervisor
+    name = 'standard-group5:'
+
+    [supervisord]
+    nodaemon=true
+
+    [program:fm_queue_subject_exports]
+    process_name=%(program_name)s%(process_num)s
+    {{- printf .Values.apps.console.supervisord_definition | nindent 4 }}
+    numprocs={{ .Values.apps.console.fm_queue_subject_exports.numprocs | default 1 }}
+    command=bin/console fm:notification:start --backend="fm_core.queue.subject_exports" {{ .Values.apps.console.debug | ternary "" "--no-debug" }} --iteration={{- .Values.apps.console.fm_queue_subject_exports.iteration | default 100 }}

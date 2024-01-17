@@ -1,0 +1,79 @@
+{{- if .Values.apps.portal.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.apps.portal.name }}
+  namespace: fmhv
+  annotations:
+    {{- printf .Values.apps.ingress_definition_dns | nindent 4 }}
+    external-dns.alpha.kubernetes.io/set-identifier: "{{ .Values.clusterName }}"
+    external-dns.alpha.kubernetes.io/aws-weight: "{{ .Values.route53_weight }}"
+spec:
+  tls:
+  - hosts:
+    - portal.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    secretName: cert-portal
+  rules:
+  - host: portal.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: {{ .Values.apps.portal.name }}
+              port:
+                number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.apps.portal.name }}-fm
+  namespace: fmhv
+  annotations:
+    {{- printf .Values.apps.ingress_definition_portal_dns | nindent 4 }}
+    external-dns.alpha.kubernetes.io/set-identifier: "{{ .Values.clusterName }}"
+    external-dns.alpha.kubernetes.io/aws-weight: "{{ .Values.route53_weight }}"
+spec:
+  tls:
+    - hosts:
+        - '*.{{ .Values.awsAccountAlias }}.fotomerchantportal.com'
+      secretName: cert-portal-wildcard
+  rules:
+    - host: '*.{{ .Values.awsAccountAlias }}.fotomerchantportal.com'
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.apps.portal.name }}
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.apps.portal.name }}-cluster
+  namespace: fmhv
+  annotations:
+    {{- printf .Values.apps.ingress_definition_cluster_dns | nindent 4 }}
+    external-dns.alpha.kubernetes.io/set-identifier: "{{ .Values.clusterName }}"
+    external-dns.alpha.kubernetes.io/aws-weight: "100"
+spec:
+  tls:
+    - hosts:
+        - portal.{{ .Values.awsAccountAlias }}.{{ .Values.clusterName }}.fotomerchanthv.com
+      secretName: cert-portal-cluster
+  rules:
+    - host: portal.{{ .Values.awsAccountAlias }}.{{ .Values.clusterName }}.fotomerchanthv.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.apps.portal.name }}
+                port:
+                  number: 80
+{{- end }}

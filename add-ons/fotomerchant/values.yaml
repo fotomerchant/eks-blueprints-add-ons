@@ -1,0 +1,435 @@
+# Default values for buildachart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: ghcr.io/fotomerchant/hv
+  pullPolicy: Always
+
+imagePullSecrets:
+  - name: eks-argocd-github-packages-token
+
+# podSecurityContext:
+#   fsGroup: 1000
+
+# securityContext:
+#   fsGroup: 1000
+  
+# serviceAccount:
+#   annotations:
+#     eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Values.awsAccountId }}:role/fmhv-db-rebuild"
+
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  #  limits:
+  #    cpu: 100m
+  #    memory: 128Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+doctrineCache: false
+
+awsAccountId:
+awsAccountAlias:
+awsRegion:
+zone_53_portal_id:
+zone_53_id:
+zone_53_cluster_id:
+clusterName:
+route53_weight:
+min_node_size: 2
+max_node_size:
+
+apps:
+  ingress_definition: |
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+    nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
+    nginx.ingress.kubernetes.io/fastcgi-params-configmap: "ingress-cm"
+    cert-manager.io/cluster-issuer: letsencrypt-production
+
+  ingress_definition_staging_dns: |
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+    nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
+    nginx.ingress.kubernetes.io/fastcgi-params-configmap: "ingress-cm"
+    cert-manager.io/cluster-issuer: letsencrypt-staging-dns
+
+  ingress_definition_staging_portal_dns: |
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+    nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
+    nginx.ingress.kubernetes.io/fastcgi-params-configmap: "ingress-cm"
+    cert-manager.io/cluster-issuer: letsencrypt-staging-portal-dns
+
+  ingress_definition_staging_cluster_dns: |
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+    nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
+    nginx.ingress.kubernetes.io/fastcgi-params-configmap: "ingress-cm"
+    cert-manager.io/cluster-issuer: letsencrypt-staging-cluster-dns
+
+  ingress_definition_cluster_dns: |
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+    nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
+    nginx.ingress.kubernetes.io/fastcgi-params-configmap: "ingress-cm"
+    cert-manager.io/cluster-issuer: letsencrypt-production-cluster-dns
+
+  ingress_definition_dns: |
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+    nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
+    nginx.ingress.kubernetes.io/fastcgi-params-configmap: "ingress-cm"
+    cert-manager.io/cluster-issuer: letsencrypt-production-dns
+
+  ingress_definition_portal_dns: |
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+    nginx.ingress.kubernetes.io/fastcgi-index: "index.php"
+    nginx.ingress.kubernetes.io/fastcgi-params-configmap: "ingress-cm"
+    cert-manager.io/cluster-issuer: letsencrypt-production-portal-dns
+
+  affinity_strategy: |
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          - matchExpressions:
+              - key: k8s.io/cluster-autoscaler/enabled
+                operator: In
+                values:
+                  - "true"
+
+  acm_cert_arn:
+  image_pull_policy: IfNotPresent
+  service_account: fmhv-app
+
+  repository: ghcr.io/fotomerchant/hv/
+
+  # database flags to execute migrations
+  database:
+    migrate: true
+    revision: sha-0955780
+
+  # AI Application
+  ai:
+    enabled: true
+    migrate: true
+    revision: sha-86c30d6
+    # (disable smoke tests to run by commenting out this value)
+    smoke_revision:
+    debug: false
+    smoke_debug: false
+    opn: false
+    name: ai-web
+
+  # Management Application
+  mi:
+    enabled: true
+    migrate: true
+    revision: sha-55da3d0
+    smoke_revision: sha-7955050
+    debug: false
+    smoke_debug: false
+    name: mi-web
+    opn: false
+
+  # API Application
+  api:
+    enabled: true
+    migrate: false
+    revision: latest
+    name: api-web
+    debug: false
+    smoke_debug: false
+    opn: false
+
+  # Lab Application
+  lab:
+    enabled: true
+    migrate: true
+    revision: sha-40d123a
+    #smoke_revision: sha-16f2435
+    debug: false
+    smoke_debug: false
+    opn: false
+    name: lab-web
+
+  # HVT Application
+  hvt:
+    enabled: true
+    migrate: true
+    revision: sha-622c917
+    debug: false
+    opn: false
+    name: hvt-web
+
+  # Portal Application
+  portal:
+    enabled: true
+    migrate: true
+    revision: sha-e7baa54
+    debug: true
+    name: portal-web
+    opn: false
+
+  # Console Bundle Application
+  console:
+    debug: false
+    enabled: true
+    revision: sha-91596d1
+
+    supervisord_definition: |
+      autorestart=true
+      startsecs=0
+      exitcodes=0,2
+      redirect_stderr=true
+      stdout_logfile=/dev/stdout
+      stderr_logfile=stderr
+      stdout_logfile_maxbytes=0
+
+    supervisord_configuration: |
+      [supervisord]
+      nodaemon=true
+      
+      [supervisorctl]
+      serverurl = unix:///tmp/supervisor.sock
+      prompt = mysupervisor
+
+    fm_queue_image_knockouts:
+      numprocs: 1
+      iteration: 100
+
+    fm_queue_image_cropping:
+      numprocs: 1
+      iteration: 100
+
+    fm_queue_image_automation:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_image_enhancements:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_face_deletion:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_face_collation:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_cloud_storage_uploads:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_image_ops:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_import_jobs:
+      numprocs: 1
+      iteration: 5
+
+    msg_fm_queue_image_automation:
+      numprocs: 1
+      limit: 1
+
+    msg_fm_queue_face_collation:
+      numprocs: 1
+      limit: 1
+
+    fm_queue_face_indexing:
+      numprocs: 1
+      iteration: 5
+
+    msg_fm_queue_face_deletion:
+      numprocs: 1
+      limit: 1
+
+    msg_fm_queue_image_cropping:
+      numprocs: 1
+      limit: 1 
+
+    fm_queue_order_actions:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_orders:
+      numprocs: 1
+      iteration: 5
+    
+    fm_queue_order_items:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_supplier_orders:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_build_order_item_job:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_order_node_evaluation:
+      numprocs: 1
+      iteration: 5 
+
+    fm_queue_order_distribution_dd:
+      numprocs: 1
+      iteration: 5   
+
+    fm_queue_order_distribution_df:
+      numprocs: 1
+      iteration: 5  
+
+    fm_queue_batch_order_item_check:
+      numprocs: 1
+      iteration: 5  
+
+    fm_queue_plic_orders:
+      numprocs: 1
+      iteration: 5  
+
+    fm_queue_batch_order_item_build_job:
+      numprocs: 1
+      iteration: 5  
+
+    fm_queue_batch_order_distribution:
+      numprocs: 1
+      iteration: 5  
+    
+    fm_queue_render_job_item_status:
+      numprocs: 1
+      iteration: 5  
+
+    fm_queue_render_item_deleted:
+      numprocs: 1
+      iteration: 5  
+    
+    msg_fm_queue_face_indexing:
+      numprocs: 1
+      limit: 1 
+
+    fm_queue_email:
+      numprocs: 1
+      iteration: 5  
+
+    fm_queue_sms:
+      numprocs: 1
+      iteration: 5  
+
+    fm_queue_subjects:
+      numprocs: 1
+      iteration: 5
+
+    image_copy_queue:
+      numprocs: 1
+      iteration: 5   
+
+    asset_copy_queue:
+      numprocs: 1
+      iteration: 5      
+
+    fm_queue_cloud_storage:
+      numprocs: 1
+      iteration: 5   
+
+    fm_queue_cloud_storage_file_ops:
+      numprocs: 1
+      iteration: 5  
+
+    fm_queue_client_sessions:
+      numprocs: 1
+      iteration: 5  
+
+    msg_fm_queue_client_sessions:
+      numprocs: 1
+      limit: 5
+
+    msg_fm_queue_batch_job_files:
+      numprocs: 1
+      limit: 5
+
+    fm_queue_batch_job_files:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_plic:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_reporting:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_billable_events:
+      numprocs: 1
+      iteration: 5
+
+    msg_fm_queue_billable_events:
+      numprocs: 1
+      limit: 5
+
+    msg_fm_queue_service_details:
+      numprocs: 1
+      limit: 5
+
+    fm_queue_trackable_events:
+      numprocs: 1
+      iteration: 5
+
+    fm_queue_trackable_events_s3:
+      numprocs: 1
+      iteration: 5
+
+    msg_fm_queue_trackable_events:
+      numprocs: 1
+      limit: 5
+
+    msg_fm_queue_trackable_events_s3:  
+      numprocs: 1
+      limit: 5
+
+    fm_queue_subject_exports:
+      numprocs: 1
+      limit: 5
+
+    image_reprocess_queue:
+      numprocs: 1
+      limit: 5

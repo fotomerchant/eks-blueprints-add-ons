@@ -1,0 +1,49 @@
+{{- if .Values.apps.console.enabled -}}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-standard-group5
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: standard-group5
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-batch_job_files
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-standard-group5-1
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: standard-group5-1
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-plic
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-standard-group5-2
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: standard-group5-2
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-billable_events.fifo
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+{{- end }}

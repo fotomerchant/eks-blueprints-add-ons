@@ -1,0 +1,67 @@
+{{- if .Values.apps.portal.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.apps.portal.name }}
+  namespace: fmhv
+  labels:
+    app: {{ .Values.apps.portal.name }}
+    group: sync
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: {{ .Values.apps.portal.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.apps.portal.name }}
+    spec:
+      {{ if .Values.apps.portal.opn }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ .Values.apps.portal.name }}
+              topologyKey: "kubernetes.io/hostname"
+      {{ end }}
+      serviceAccountName: fmhv-app
+      containers:
+      - name: app
+        image: "{{ .Values.apps.repository }}appportalbundle:{{ .Values.apps.portal.revision }}"
+        imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+        args:
+        - -o
+        - appnginx
+        env:
+        - name: ACCOUNT_ALIAS
+          value: "{{ .Values.awsAccountAlias }}"
+        - name: APP_NAME
+          value: "portal"
+        - name: AWS_REGION
+          value: "{{ .Values.awsRegion }}"
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - name: symfonyenv-volume
+          mountPath: /usr/src/app/.env
+          subPath: symfony.portal.env
+        resources:
+          requests:
+            cpu: "600m"
+            memory: "300Mi"
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      volumes:
+        - name: config-volume
+          configMap:
+            name: configuration
+        - name: symfonyenv-volume
+          configMap:
+            name: configuration
+      restartPolicy: Always
+{{- end }}

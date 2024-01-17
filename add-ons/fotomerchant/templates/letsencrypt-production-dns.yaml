@@ -1,0 +1,74 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production-portal-dns
+  namespace: fmhv
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@fotomerchant.com
+    privateKeySecretRef:
+      name: letsencrypt-production-portal-dns
+    solvers:
+    - dns01:
+        route53:
+          region: {{ .Values.awsRegion }}
+          hostedZoneID: {{ .Values.zone_53_portal_id }}
+      selector:
+        dnsZones:
+          - '{{ .Values.awsAccountAlias }}.fotomerchantportal.com'
+    - dns01:
+        route53:
+          region: {{ .Values.awsRegion }}
+          hostedZoneID: {{ .Values.zone_53_portal_id }}
+      selector:
+        dnsZones:
+          - '{{ .Values.awsAccountAlias }}.fotomerchantportal.com'
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production-dns
+  namespace: fmhv
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@fotomerchant.com
+    privateKeySecretRef:
+      name: letsencrypt-production-dns
+    solvers:
+      - dns01:
+          route53:
+            region: {{ .Values.awsRegion }}
+            hostedZoneID: {{ .Values.zone_53_id }}
+        selector:
+          dnsZones:
+            - '{{ .Values.awsAccountAlias }}.fotomerchanthv.com'
+      - dns01:
+          route53:
+            region: {{ .Values.awsRegion }}
+            hostedZoneID: {{ .Values.zone_53_id }}
+        selector:
+          dnsZones:
+            - '{{ .Values.awsAccountAlias }}.fotomerchanthv.com'
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production-cluster-dns
+  namespace: fmhv
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: admin@fotomerchant.com
+    privateKeySecretRef:
+      name: letsencrypt-production-cluster-dns
+    solvers:
+      - selector:
+          dnsZones:
+            - '{{ .Values.awsAccountAlias }}.{{ .Values.clusterName }}.fotomerchanthv.com'
+        dns01:
+          cnameStrategy: Follow
+          route53:
+            region: {{ .Values.awsRegion }}
+            hostedZoneID: {{ .Values.zone_53_cluster_id }}

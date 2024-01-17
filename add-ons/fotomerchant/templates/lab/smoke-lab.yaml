@@ -1,0 +1,31 @@
+{{- if and (.Values.apps.lab.enabled) ((.Values.apps.lab).smoke_revision) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: lab-smoke
+  generateName: lab-smoke-
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+spec:
+  template:
+    spec:
+      containers:
+      - name: smoketests
+        image: "{{ .Values.apps.repository }}applabbundlesmoke:{{ .Values.apps.lab.smoke_revision }}"
+        imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+        args:
+        - -o
+        - app
+        volumeMounts:
+        - name: symfonyenv-volume
+          mountPath: /app/config.toml
+          subPath: labsmoke.toml
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      volumes:
+        - name: symfonyenv-volume
+          configMap:
+            name: configuration
+      restartPolicy: Always
+  backoffLimit: 6
+{{- end }}

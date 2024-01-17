@@ -1,0 +1,39 @@
+{{- if .Values.apps.ai.smoke_debug -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.apps.ai.name }}-smk-dbg
+  namespace: fmhv
+  labels:
+    app: {{ .Values.apps.ai.name }}-smk-dbg
+    group: sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.apps.ai.name }}-smk-dbg
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.apps.ai.name }}-smk-dbg
+    spec:
+      serviceAccountName: {{ .Values.apps.service_account }}
+      containers:
+      - name: smoketestsdebug
+        image: "{{ .Values.apps.repository }}appaibundlesmoke:{{ .Values.apps.ai.smoke_revision }}"
+        imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+        args:
+        - -o
+        - debug
+        volumeMounts:
+        - name: symfonyenv-volume
+          mountPath: /app/config.toml
+          subPath: aismoke.toml
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      volumes:
+        - name: symfonyenv-volume
+          configMap:
+            name: configuration
+      restartPolicy: Always
+{{- end }}

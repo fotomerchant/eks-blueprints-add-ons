@@ -1,0 +1,49 @@
+{{- if .Values.apps.console.enabled -}}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-standard-group7
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: standard-group7
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-trackable_events_s3.fifo
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-standard-group7-1
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: standard-group7-1
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-msg-trackable_events.fifo
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: aws-sqs-queue-scaledobject-standard-group7-2
+  namespace: fmhv
+spec:
+  scaleTargetRef:
+    name: standard-group7-2
+  triggers:
+    - type: aws-sqs-queue
+      metadata:
+        queueURL: https://sqs.{{ .Values.awsRegion }}.amazonaws.com/{{ .Values.awsAccountId }}/hv-msg-trackable_events_s3
+        queueLength: "50"
+        awsRegion: "{{ .Values.awsRegion }}"
+        identityOwner: operator
+{{- end }}

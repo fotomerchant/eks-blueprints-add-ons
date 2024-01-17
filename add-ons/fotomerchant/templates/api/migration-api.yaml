@@ -1,0 +1,67 @@
+{{- if and (.Values.apps.api.enabled) (.Values.apps.api.migrate) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: api-migration
+  generateName: api-migration
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+  namespace: fmhv
+spec:
+  completions: 1
+  template:
+    spec:
+      serviceAccountName: fmhv-app
+      restartPolicy: OnFailure
+      containers:
+      - name: main
+        image: "{{ .Values.apps.repository }}appapibundle:{{ .Values.apps.api.revision }}"
+        args:
+        - -o
+        - static
+        env:
+        - name: ACCOUNT_ALIAS
+          value: "{{ .Values.awsAccountAlias }}"
+        - name: APP_NAME
+          value: "api"
+        - name: AWS_ACCOUNT
+          value: "{{ .Values.awsAccountId }}"
+        imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+  backoffLimit: 3
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: api-migration-debug
+  generateName: api-migration-debug-
+  annotations:
+    argocd.argoproj.io/hook: SyncFail
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+  namespace: fmhv
+spec:
+  template:
+    spec:
+      serviceAccountName: fmhv-app
+      containers:
+      - name: main
+        image: "ghcr.io/fotomerchant/hv/appapibundle:{{ .Values.apps.api.revision }}"
+        imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+        args:
+        - -o
+        - debug
+        env:
+        - name: ACCOUNT_ALIAS
+          value: "{{ .Values.awsAccountAlias }}"
+        - name: APP_NAME
+          value: "api"
+        - name: AWS_ACCOUNT
+          value: "{{ .Values.awsAccountId }}"
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      restartPolicy: Never
+  backoffLimit: 2
+{{- end }}

@@ -1,0 +1,145 @@
+{{- if .Values.apps.console.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-group3
+  namespace: fmhv
+  labels:
+    app: orders-group3
+    group: sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-group3
+  template:
+    metadata:
+      labels:
+        app: orders-group3
+    spec:
+      serviceAccountName: fmhv-app
+      containers:
+        - name: app
+          image: "{{ .Values.apps.repository }}appconsolebundle:{{.Values.apps.console.revision}}"
+          imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+          args:
+            - -o
+            - app
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/supervisor/conf.d/supervisord.conf
+              subPath: orders-group3-config.yaml
+            - name: symfonyenv-volume
+              mountPath: /usr/src/app/.env
+              subPath: symfony.console.env
+          resources:
+            requests:
+              cpu: "400m"
+              memory: "400Mi"
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      volumes:
+        - name: config-volume
+          configMap:
+            name: configuration
+        - name: symfonyenv-volume
+          configMap:
+            name: configuration
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-group3-1
+  namespace: fmhv
+  labels:
+    app: orders-group3-1
+    group: sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-group3-1
+  template:
+    metadata:
+      labels:
+        app: orders-group3-1
+    spec:
+      serviceAccountName: fmhv-app
+      containers:
+        - name: app
+          image: "{{ .Values.apps.repository }}appconsolebundle:{{.Values.apps.console.revision}}"
+          imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+          args:
+            - -o
+            - app
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/supervisor/conf.d/supervisord.conf
+              subPath: orders-group3-1-config.yaml
+            - name: symfonyenv-volume
+              mountPath: /usr/src/app/.env
+              subPath: symfony.console.env
+          resources:
+            requests:
+              cpu: "400m"
+              memory: "400Mi"
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      volumes:
+        - name: config-volume
+          configMap:
+            name: configuration
+        - name: symfonyenv-volume
+          configMap:
+            name: configuration
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-group3-2
+  namespace: fmhv
+  labels:
+    app: orders-group3-2
+    group: sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-group3-2
+  template:
+    metadata:
+      labels:
+        app: orders-group3-2
+    spec:
+      serviceAccountName: fmhv-app
+      containers:
+        - name: app
+          image: "{{ .Values.apps.repository }}appconsolebundle:{{.Values.apps.console.revision}}"
+          imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+          args:
+            - -o
+            - app
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/supervisor/conf.d/supervisord.conf
+              subPath: orders-group3-2-config.yaml
+            - name: symfonyenv-volume
+              mountPath: /usr/src/app/.env
+              subPath: symfony.console.env
+          resources:
+            requests:
+              cpu: "400m"
+              memory: "400Mi"
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      volumes:
+        - name: config-volume
+          configMap:
+            name: configuration
+        - name: symfonyenv-volume
+          configMap:
+            name: configuration
+      restartPolicy: Always
+{{- end }}

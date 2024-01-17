@@ -1,0 +1,63 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging-portal-dns
+  namespace: fmhv
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: admin@fotomerchant.com
+    privateKeySecretRef:
+      name: letsencrypt-staging-portal-dns
+    solvers:
+      - selector:
+          dnsZones:
+            - '{{ .Values.awsAccountAlias }}.fotomerchantportal.com'
+        dns01:
+          cnameStrategy: Follow
+          route53:
+            region: {{ .Values.awsRegion }}
+            hostedZoneID: {{ .Values.zone_53_portal_id }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging-dns
+  namespace: fmhv
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: admin@fotomerchant.com
+    privateKeySecretRef:
+      name: letsencrypt-staging-dns
+    solvers:
+      - selector:
+          dnsZones:
+            - '{{ .Values.awsAccountAlias }}.fotomerchanthv.com'
+            - '{{ .Values.awsAccountAlias }}.{{ .Values.clusterName }}.fotomerchanthv.com'
+        dns01:
+          cnameStrategy: Follow
+          route53:
+            region: {{ .Values.awsRegion }}
+            hostedZoneID: {{ .Values.zone_53_id }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging-cluster-dns
+  namespace: fmhv
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: admin@fotomerchant.com
+    privateKeySecretRef:
+      name: letsencrypt-staging-cluster-dns
+    solvers:
+      - selector:
+          dnsZones:
+            - '{{ .Values.awsAccountAlias }}.{{ .Values.clusterName }}.fotomerchanthv.com'
+        dns01:
+          cnameStrategy: Follow
+          route53:
+            region: {{ .Values.awsRegion }}
+            hostedZoneID: {{ .Values.zone_53_cluster_id }}

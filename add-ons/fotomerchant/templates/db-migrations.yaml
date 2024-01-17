@@ -1,0 +1,91 @@
+{{- if .Values.apps.database.migrate }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migration
+  generateName: db-migration-
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+  namespace: fmhv
+spec:
+  completions: 1
+  template:
+    spec:
+      serviceAccountName: fmhv-db-rebuild
+      restartPolicy: OnFailure
+      containers:
+        - name: main
+          image: "ghcr.io/fotomerchant/hv/appdeploymentbundle:{{ .Values.apps.database.revision }}"
+          imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+          args:
+            - -o
+            - restore
+          env:
+            - name: MYSQL_HOST
+              value: "db.writer.{{ .Values.awsAccountAlias }}.fotomerchanthv.com"
+            - name: APP_ENV
+              value: dev
+            - name: ACCOUNT_ALIAS
+              value: "{{ .Values.awsAccountAlias }}"
+            - name: APP_NAME
+              value: "deployment"
+            - name: AWS_REGION
+              value: "{{ .Values.awsRegion }}"
+          resources:
+            requests:
+              cpu: "1400m"
+              memory: "256Mi"
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      securityContext:
+        fsGroup: 999
+        runAsNonRoot: true
+        runAsUser: 1000
+  backoffLimit: 3
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migration-debug
+  generateName: db-migration-debug-
+  annotations:
+    argocd.argoproj.io/hook: SyncFail
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+  namespace: fmhv
+spec:
+  template:
+    spec:
+      serviceAccountName: fmhv-db-rebuild
+      containers:
+        - name: main
+          image: "ghcr.io/fotomerchant/hv/appdeploymentbundle:{{ .Values.apps.database.revision }}"
+          imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+          args:
+            - -o
+            - debug
+          env:
+            - name: MYSQL_HOST
+              value: "db.writer.{{ .Values.awsAccountAlias }}.fotomerchanthv.com"
+            - name: APP_ENV
+              value: dev
+            - name: ACCOUNT_ALIAS
+              value: "{{ .Values.awsAccountAlias }}"
+            - name: APP_NAME
+              value: "ai"
+            - name: AWS_REGION
+              value: "{{ .Values.awsRegion }}"
+          resources:
+            requests:
+              cpu: "1400m"
+              memory: "256Mi"
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      restartPolicy: Never
+      securityContext:
+        fsGroup: 999
+        runAsNonRoot: true
+        runAsUser: 1000
+  backoffLimit: 2
+{{- end }}

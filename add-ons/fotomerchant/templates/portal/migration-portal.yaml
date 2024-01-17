@@ -1,0 +1,67 @@
+{{- if and (.Values.apps.portal.enabled) (.Values.apps.portal.migrate) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: portal-migration
+  generateName: portal-migration
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation
+  namespace: fmhv
+spec:
+  completions: 1
+  template:
+    spec:
+      serviceAccountName: fmhv-app
+      restartPolicy: OnFailure
+      containers:
+      - name: main
+        image: "{{ .Values.apps.repository }}appportalbundle:{{ .Values.apps.portal.revision }}"
+        args:
+        - -o
+        - static
+        env:
+        - name: ACCOUNT_ALIAS
+          value: "{{ .Values.awsAccountAlias }}"
+        - name: APP_NAME
+          value: "portal"
+        - name: AWS_ACCOUNT
+          value: "{{ .Values.awsAccountId }}"
+        imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+  backoffLimit: 3
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: portal-migration-debug
+  generateName: portal-migration-debug-
+  annotations:
+    argocd.argoproj.io/hook: SyncFail
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+  namespace: fmhv
+spec:
+  template:
+    spec:
+      serviceAccountName: fmhv-app
+      containers:
+      - name: main
+        image: "{{ .Values.apps.repository }}appportalbundle:{{ .Values.apps.portal.revision }}"
+        imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+        args:
+        - -o
+        - debug
+        env:
+        - name: ACCOUNT_ALIAS
+          value: "{{ .Values.awsAccountAlias }}"
+        - name: APP_NAME
+          value: "portal"
+        - name: AWS_ACCOUNT
+          value: "{{ .Values.awsAccountId }}"
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      restartPolicy: Never
+  backoffLimit: 2
+{{- end }}

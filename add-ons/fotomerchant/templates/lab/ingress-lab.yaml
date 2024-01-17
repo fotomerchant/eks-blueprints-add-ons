@@ -1,0 +1,53 @@
+{{- if .Values.apps.lab.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.apps.lab.name }}
+  namespace: fmhv
+  annotations:
+    {{- printf .Values.apps.ingress_definition_dns | nindent 4 }}
+    external-dns.alpha.kubernetes.io/set-identifier: "{{ .Values.clusterName }}"
+    external-dns.alpha.kubernetes.io/aws-weight: "{{ .Values.route53_weight }}"
+spec:
+  tls:
+  - hosts:
+    - lab.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    secretName: cert-lab
+  rules:
+  - host: lab.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: {{ .Values.apps.lab.name }}
+              port:
+                number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.apps.lab.name }}-cluster
+  namespace: fmhv
+  annotations:
+    {{- printf .Values.apps.ingress_definition_cluster_dns | nindent 4 }}
+    external-dns.alpha.kubernetes.io/set-identifier: "{{ .Values.clusterName }}"
+    external-dns.alpha.kubernetes.io/aws-weight: "100"
+spec:
+  tls:
+    - hosts:
+        - lab.{{ .Values.awsAccountAlias }}.{{ .Values.clusterName }}.fotomerchanthv.com
+      secretName: cert-lab-cluster
+  rules:
+    - host: lab.{{ .Values.awsAccountAlias }}.{{ .Values.clusterName }}.fotomerchanthv.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.apps.lab.name }}
+                port:
+                  number: 80
+{{- end }}

@@ -1,0 +1,55 @@
+{{- if .Values.apps.lab.debug -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab-debug
+  namespace: fmhv
+  labels:
+    app: {{ .Values.apps.lab.name }}-dbg
+    group: sync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.apps.lab.name }}-dbg
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.apps.lab.name }}-dbg
+    spec:
+      serviceAccountName: fmhv-app
+      containers:
+      - name: app
+        image: "ghcr.io/fotomerchant/hv/applabbundle:{{ .Values.apps.lab.revision }}"
+        imagePullPolicy: {{ .Values.apps.image_pull_policy }}
+        args:
+        - -o
+        - debug
+        env:
+        - name: ACCOUNT_ALIAS
+          value: "{{ .Values.awsAccountAlias }}"
+        - name: APP_NAME
+          value: "lab"
+        - name: AWS_REGION
+          value: "{{ .Values.awsRegion }}"
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - name: symfonyenv-volume
+          mountPath: /usr/src/app/.env
+          subPath: symfony.lab.env
+        resources:
+          requests:
+            cpu: "600m"
+            memory: "300Mi"
+      imagePullSecrets:
+        - name: eks-argocd-github-packages-token
+      volumes:
+        - name: config-volume
+          configMap:
+            name: configuration
+        - name: symfonyenv-volume
+          configMap:
+            name: configuration
+      restartPolicy: Always
+{{- end }}
