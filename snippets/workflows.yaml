@@ -15,7 +15,7 @@ spec:
     targetRevision: feature/fep-7-blueprint-integration
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: workloads
+    namespace: workflows
   syncPolicy:
     automated:
       prune: true

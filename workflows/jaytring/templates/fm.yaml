@@ -1,0 +1,57 @@
+{{- if and (.Values.spec.apps.fotomerchant) (.Values.spec.apps.fotomerchant.createProject) -}}
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: "fotomerchant"
+  namespace: "argocd"
+  # Finalizer that ensures that project is not deleted until it is not referenced by any application
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  destinations:
+    - namespace: '*'
+      server: https://kubernetes.default.svc
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  sourceNamespaces:
+    - '*'
+  sourceRepos:
+    - git@github.com:fotomerchant/eks-blueprints-add-ons.git
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.spec.apps.fotomerchant.name | default "fotomerchant" }}
+  namespace: {{ .Values.argoNamespace | default "argocd" }}
+
+  labels:
+    {{- toYaml .Values.labels | nindent 4 }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: {{ .Values.spec.apps.fotomerchant.project | default "fotomerchant" }}
+  destination:
+    namespace: {{ .Values.spec.apps.fotomerchant.namespace | default "fotomerchant" }}
+    server: {{ .Values.destinationServer | default .Values.spec.destination.server }}
+  source:
+    repoURL: {{ .Values.spec.apps.fotomerchant.repoURL }}
+    targetRevision: {{ .Values.spec.apps.fotomerchant.targetRevision }}
+    helm:
+      values: |
+        a=b
+    path: {{ .Values.spec.apps.fotomerchant.path }}
+  syncPolicy:
+    automated:
+      prune: true
+    syncOptions:
+      - CreateNamespace=true # Created with IaC - # https://github.com/argoproj/argo-cd/issues/7799
+      - ServerSideApply=true # Big CRDs.
+{{- end }}
