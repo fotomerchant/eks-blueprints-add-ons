@@ -13,6 +13,34 @@ spec:
     path: workflows/jaytring
     repoURL: 'git@github.com:fotomerchant/eks-blueprints-add-ons.git'
     targetRevision: feature/fep-7-blueprint-integration
+    helm:
+      "account": "678155825749"
+      "clusterName": "yellow"
+      "labels":
+        "env": "yellow"
+      "region": "ap-southeast-2"
+      "repoUrl": "git@github.com:fotomerchant/eks-blueprints-add-ons"
+      "spec":
+        "source":
+          "repoURL": "git@github.com:fotomerchant/eks-blueprints-add-ons"
+          "targetRevision": "feature/fep-7-blueprint-integration"
+        "blueprint": "terraform"
+        "clusterName": "yellow"
+        "env": "yellow"
+        "ingress":
+          "route53_weight": 100
+          "argocd_route53_weight": 100
+          "ecsfrontend_route53_weight": 100
+          "host": jaytring.fotomerchanthv.com
+          "type": "nginx"
+        "karpenterInstanceProfile": "karpenter-yellow-2024011820352267280000001b"
+        "target_group_arn":
+        "external_lb_url":
+        apps:
+          fotomerchant:
+            metadata:
+
+
   destination:
     server: "https://kubernetes.default.svc"
     namespace: workflows

@@ -3,7 +3,6 @@ destinationServer: ''
 argoProjectNamespace: ''
 argoNamespace: ''
 
-
 labels:
   env: jaytring
 spec:
