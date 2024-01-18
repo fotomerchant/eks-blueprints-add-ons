@@ -139,3 +139,8 @@ Project needs to point to a HELM chart
 App Project : Application -> Helm Chart Repo
  workflows/jaytring/values.yaml needs to point to helm chart somewhere.....
  put the chart and values in a different directory
+
+
+# redeploy the app ensuring we load the workflows properly
+# rename workflows to workloads
+# inject the PAT into the workloads via the inputs marks as sensitive
