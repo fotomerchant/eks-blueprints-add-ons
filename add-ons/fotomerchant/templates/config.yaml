@@ -2,9 +2,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: configuration
-  annotations:
-    "helm.sh/hook": pre-install
-    "helm.sh/hook-weight": "-10"
+#  annotations:
+#    "helm.sh/hook": pre-install
+#    "helm.sh/hook-weight": "-10"
   namespace: fmhv
 data:
   labsmoke.toml: |
