@@ -40,7 +40,7 @@ spec:
         - api.{{ .Values.awsAccountAlias }}.{{ .Values.clusterName }}.fotomerchanthv.com
       secretName: cert-api-cluster
   rules:
-    - host: api.{{ .Values.awsAccountAlias }}.fotomerchanthv.com
+    - host: api.{{ .Values.awsAccountAlias }}.{{ .Values.clusterName }}.fotomerchanthv.com
       http:
         paths:
           - path: /
