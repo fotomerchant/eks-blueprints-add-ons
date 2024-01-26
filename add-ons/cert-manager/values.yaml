@@ -3,4 +3,4 @@ cert-manager:
   - --enable-certificate-owner-ref=true
   installCRDs: true
   serviceAccount:
-    create: false
+    create: true
