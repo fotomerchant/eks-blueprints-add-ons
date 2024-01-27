@@ -4,6 +4,9 @@ cert-manager:
   installCRDs: true
   serviceAccount:
     create: true
+    name: cert-manager
     annotations:
       eks.amazonaws.com/role-arn: arn:aws:iam::{{.Values.account}}:role/{{.Values.clusterName}}-cert-manager-sa-irsa
   serviceAccountName: cert-manager
+  securityContext:
+    fsGroup: 1001
