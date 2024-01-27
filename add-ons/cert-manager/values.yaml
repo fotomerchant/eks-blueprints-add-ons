@@ -6,3 +6,4 @@ cert-manager:
     create: true
     annotations:
       eks.amazonaws.com/role-arn: arn:aws:iam::{{.Values.account}}:role/{{.Values.clusterName}}-cert-manager-sa-irsa
+  serviceAccountName: cert-manager
