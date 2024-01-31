@@ -6,7 +6,7 @@ cert-manager:
     create: true
     name: cert-manager
     annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::{{.Values.account}}:role/{{.Values.clusterName}}-cert-manager-sa-irsa
+      eks.amazonaws.com/role-arn: arn:aws:iam::fixed:role/fixed-cert-manager-sa-irsa
   serviceAccountName: cert-manager
   securityContext:
     fsGroup: 1001
