@@ -1,12 +1,5 @@
 cert-manager:
   extraArgs:
-  - --enable-certificate-owner-ref=true
+    - --enable-certificate-owner-ref=true
+
   installCRDs: true
-  serviceAccount:
-    create: true
-    name: cert-manager
-    annotations:
-      eks.amazonaws.com/role-arn: arn:aws:iam::678155825749:role/yellow-cert-manager-sa-irsa
-  serviceAccountName: cert-manager
-  securityContext:
-    fsGroup: 1001
