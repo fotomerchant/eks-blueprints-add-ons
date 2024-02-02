@@ -1,7 +1,7 @@
 # Global Values
 repoUrl: 'git@github.com:fotomerchant/eks-blueprints-add-ons.git'
 
-targetRevision: HEAD
+targetRevision: feature/fep-7-blueprint-integration
 region: ''
 account: ''
 clusterName: ''
