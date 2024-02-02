@@ -19,6 +19,8 @@ spec:
       parameters:
       - name: cert-manager.serviceAccount.name
         value: {{ .Values.certManager.serviceAccountName }}
+      - name: cert-manager.serviceAccount.arn
+        value: arn:aws:iam::{{ .Values.account }}:role/{{ .Values.clusterName }}-cert-manager-sa-irsa
   destination:
     server: {{ .Values.destinationServer | default "https://kubernetes.default.svc" }}
     namespace: cert-manager
