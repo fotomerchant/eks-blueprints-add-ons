@@ -1,5 +1,5 @@
 # Global Values
-repoUrl: 'https://github.com/fotomerchant/eks-blueprints-add-ons.git'
+repoUrl: 'git@github.com:fotomerchant/eks-blueprints-add-ons.git'
 
 targetRevision: HEAD
 region: ''
