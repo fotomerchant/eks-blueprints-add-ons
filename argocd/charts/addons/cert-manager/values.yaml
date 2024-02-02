@@ -5,9 +5,6 @@ installCRDs: true
 serviceAccount:
   create: true
   name: cert-manager
-  arn:
-  annotations:
-    eks.amazonaws.com/role-arn: {{ .Values.serviceAccount.arn }}
 serviceAccountName: cert-manager
 securityContext:
   fsGroup: 1001
