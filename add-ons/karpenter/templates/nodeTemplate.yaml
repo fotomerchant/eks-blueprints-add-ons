@@ -2,8 +2,7 @@ apiVersion: karpenter.k8s.aws/v1alpha1
 kind: AWSNodeTemplate
 metadata:
   name: default
-  annotations:
-    argocd.argoproj.io/sync-wave: "5"
+  namespace: karpenter
 spec:
   # project: {{ .Values.argoProject | default "default" }}
   # launchTemplate:

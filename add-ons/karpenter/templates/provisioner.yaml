@@ -3,8 +3,6 @@ kind: Provisioner
 metadata:
   name: default
   namespace: karpenter
-  annotations:
-    argocd.argoproj.io/sync-wave: "5"
 spec:
   # project: {{ .Values.argoProject | default "default" }}
   # References cloud provider-specific custom resource, see your cloud provider specific documentation
