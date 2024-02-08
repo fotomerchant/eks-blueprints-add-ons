@@ -210,7 +210,7 @@ apps:
   # Console Bundle Application
   console:
     debug: false
-    enabled: true
+    enabled: false
     revision: sha-91596d1
 
     supervisord_definition: |

@@ -48,7 +48,7 @@ spec:
       values: |
         keda:
           serviceAccount:
-            create: true
+            name: keda-controller-{{ .Values.spec.clusterName }}
     path: {{ .Values.spec.apps.keda.path }}
   syncPolicy:
     automated:
