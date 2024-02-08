@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: keda-controller-blue
-  namespace: keda
-  annotations:
-    argocd.argoproj.io/sync-options: Prune=false
-    eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Values.account }}:role/keda-controller-{{ .Values.spec.clusterName }}"
