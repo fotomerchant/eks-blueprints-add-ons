@@ -170,7 +170,7 @@ apps:
 
   # API Application
   api:
-    enabled: true
+    enabled: false
     migrate: false
     revision: latest
     name: api-web
@@ -180,8 +180,8 @@ apps:
 
   # Lab Application
   lab:
-    enabled: true
-    migrate: true
+    enabled: false
+    migrate: false
     revision: sha-40d123a
     #smoke_revision: sha-16f2435
     debug: false
@@ -191,8 +191,8 @@ apps:
 
   # HVT Application
   hvt:
-    enabled: true
-    migrate: true
+    enabled: false
+    migrate: false
     revision: sha-622c917
     debug: false
     opn: false
@@ -200,8 +200,8 @@ apps:
 
   # Portal Application
   portal:
-    enabled: true
-    migrate: true
+    enabled: false
+    migrate: false
     revision: sha-e7baa54
     debug: true
     name: portal-web
