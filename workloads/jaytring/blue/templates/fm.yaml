@@ -1,14 +1,14 @@
-{{- if and (.Values.spec.apps.keda) (.Values.spec.apps.keda.createProject) -}}
+{{- if and (.Values.spec.apps.fotomerchant) (.Values.spec.apps.fotomerchant.createProject) -}}
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: "keda"
+  name: "fotomerchant"
   namespace: "argocd"
   # Finalizer that ensures that project is not deleted until it is not referenced by any application
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: "2"
 spec:
   clusterResourceWhitelist:
     - group: '*'
@@ -27,7 +27,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ .Values.spec.apps.keda.name | default "keda" }}
+  name: {{ .Values.spec.apps.fotomerchant.name | default "fotomerchant" }}
   namespace: {{ .Values.argoNamespace | default "argocd" }}
 
   labels:
@@ -35,34 +35,23 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: "3"
 spec:
-  project: {{ .Values.spec.apps.keda.project | default "keda" }}
+  project: {{ .Values.spec.apps.fotomerchant.project | default "fotomerchant" }}
   destination:
-    namespace: {{ .Values.spec.apps.keda.namespace | default "keda" }}
+    namespace: {{ .Values.spec.apps.fotomerchant.namespace | default "fotomerchant" }}
     server: {{ .Values.destinationServer | default .Values.spec.destination.server }}
   source:
-    repoURL: {{ .Values.spec.apps.keda.repoURL }}
-    targetRevision: {{ .Values.spec.apps.keda.targetRevision }}
+    repoURL: {{ .Values.spec.apps.fotomerchant.repoURL }}
+    targetRevision: {{ .Values.spec.apps.fotomerchant.targetRevision }}
     helm:
       values: |
-        keda:
-          serviceAccount:
-            name: keda-controller-{{ .Values.spec.clusterName }}
-    path: {{ .Values.spec.apps.keda.path }}
+        {{- toYaml .Values.spec.apps.fotomerchant.metadata | nindent 8}}
+    path: {{ .Values.spec.apps.fotomerchant.path }}
   syncPolicy:
     automated:
       prune: true
     syncOptions:
       - CreateNamespace=true # Created with IaC - # https://github.com/argoproj/argo-cd/issues/7799
       - ServerSideApply=true # Big CRDs.
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: keda-controller-blue
-  namespace: keda
-  annotations:
-    argocd.argoproj.io/sync-options: Prune=false
-    eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Values.account }}:role/keda-controller-{{ .Values.spec.clusterName }}"
 {{- end }}

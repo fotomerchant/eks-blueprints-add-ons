@@ -1,8 +1,8 @@
-{{- if and (.Values.spec.apps.fotomerchant) (.Values.spec.apps.fotomerchant.createProject) -}}
+{{- if and (.Values.spec.apps.keda) (.Values.spec.apps.keda.createProject) -}}
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: "fotomerchant"
+  name: "keda"
   namespace: "argocd"
   # Finalizer that ensures that project is not deleted until it is not referenced by any application
   finalizers:
@@ -27,7 +27,7 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ .Values.spec.apps.fotomerchant.name | default "fotomerchant" }}
+  name: {{ .Values.spec.apps.keda.name | default "keda" }}
   namespace: {{ .Values.argoNamespace | default "argocd" }}
 
   labels:
@@ -37,21 +37,32 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: {{ .Values.spec.apps.fotomerchant.project | default "fotomerchant" }}
+  project: {{ .Values.spec.apps.keda.project | default "keda" }}
   destination:
-    namespace: {{ .Values.spec.apps.fotomerchant.namespace | default "fotomerchant" }}
+    namespace: {{ .Values.spec.apps.keda.namespace | default "keda" }}
     server: {{ .Values.destinationServer | default .Values.spec.destination.server }}
   source:
-    repoURL: {{ .Values.spec.apps.fotomerchant.repoURL }}
-    targetRevision: {{ .Values.spec.apps.fotomerchant.targetRevision }}
+    repoURL: {{ .Values.spec.apps.keda.repoURL }}
+    targetRevision: {{ .Values.spec.apps.keda.targetRevision }}
     helm:
       values: |
-        {{- toYaml .Values.spec.apps.fotomerchant.metadata | nindent 8}}
-    path: {{ .Values.spec.apps.fotomerchant.path }}
+        keda:
+          serviceAccount:
+            name: keda-controller-{{ .Values.spec.clusterName }}
+    path: {{ .Values.spec.apps.keda.path }}
   syncPolicy:
     automated:
       prune: true
     syncOptions:
       - CreateNamespace=true # Created with IaC - # https://github.com/argoproj/argo-cd/issues/7799
       - ServerSideApply=true # Big CRDs.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: keda-controller
+  namespace: keda
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false
+    eks.amazonaws.com/role-arn: "arn:aws:iam::{{ .Values.account }}:role/keda-controller-{{ .Values.spec.clusterName }}"
 {{- end }}

@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   apps:
     arc:
-      namespace: jaytring
+      namespace: actions-runner-controller
       createProject: false
       repoURL: git@github.com:fotomerchant/eks-blueprints-add-ons.git
       targetRevision: feature/fep-7-blueprint-integration
@@ -18,7 +18,7 @@ spec:
       token: pass_from_terraform_inject_via_variables_file
     fotomerchant:
       namespace: fotomerchant
-      createProject: false
+      createProject: true
       repoURL: git@github.com:fotomerchant/eks-blueprints-add-ons.git
       targetRevision: feature/fep-7-blueprint-integration
       path: add-ons/fotomerchant
