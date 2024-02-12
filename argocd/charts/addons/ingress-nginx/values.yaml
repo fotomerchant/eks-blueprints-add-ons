@@ -7,8 +7,9 @@ controller:
     #2. Else you can uncomment below section to create a NLB to expose nginx
     type: LoadBalancer
     annotations:
-      service.beta.kubernetes.io/aws-load-balancer-security-groups: '{{.metadata.annotations.aws_security_group_ingress_nginx}}'
-      service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: true
+      #service.beta.kubernetes.io/aws-load-balancer-security-groups: '{{.metadata.annotations.aws_security_group_ingress_nginx}}'
+      # Failed build model due to couldn't find all securityGroups, nameOrIDs: [{{.metadata.annotations.aws_security_group_ingress_nginx}}], found: []
+      #service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: true
       service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
       service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: true
       service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
